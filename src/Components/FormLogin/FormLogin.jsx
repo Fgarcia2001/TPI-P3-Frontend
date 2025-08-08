@@ -35,7 +35,7 @@ const FormLogin = () => {
   };
 
   return (
-    <Form className="w-50" onSubmit={HandleSubmit}>
+    <Form className="w-25 w-md-100" onSubmit={HandleSubmit}>
       <p className={errores.usuario ? "d-block text-danger m-0" : "d-none"}>
         {errores.usuario && "El usuario es requerido."}
       </p>
