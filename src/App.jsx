@@ -1,7 +1,8 @@
 import "./App.css";
+import AuthPage from "./Views/Auth/AuthPage";
 
 const App = () => {
-  return <>Aplicacion</>;
+  return <AuthPage />;
 };
 
 export default App;
