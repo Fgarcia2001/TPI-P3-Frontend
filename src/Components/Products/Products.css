@@ -1,0 +1,12 @@
+* {
+  box-sizing: border-box;
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+}
+
+.btnBuy {
+  width: 35px;
+  height: 35px;
+  background-color: #c67c4e;
+  border-radius: 0.325rem;
+  border: none;
+}

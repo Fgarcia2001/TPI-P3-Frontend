@@ -1,0 +1,23 @@
+.iconFooter {
+  width: 2.5rem;
+  padding: 0.5rem;
+}
+
+.iconFooter:hover {
+  transform: scale(1.1);
+  background-color: rgb(69, 57, 57);
+
+  border-radius: 0.5rem;
+}
+
+.footerPP {
+  background-color: #cd936e;
+  border-radius: 0.5rem;
+}
+
+.fondoDiv {
+  background-color: #f5f5f5;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+  height: 6rem;
+}

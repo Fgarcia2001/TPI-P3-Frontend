@@ -1,10 +1,13 @@
 import "./App.css";
 import AuthPage from "./Views/Auth/AuthPage";
-
+import Welcome from "./Views/Welcome/Welcome";
+import Menu from "./Views/Menu/Menu";
 const App = () => {
   return (
     <>
-      <AuthPage />
+      {/* <Welcome /> */}
+      {/* <AuthPage /> */}
+      <Menu />
     </>
   );
 };
