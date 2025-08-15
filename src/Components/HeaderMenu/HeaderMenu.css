@@ -5,6 +5,9 @@
 .titleIcon {
   font-size: 1.5rem;
   font-weight: bold;
+  background-color: #b19583;
+  border-bottom-left-radius: 15px;
+  border-bottom-right-radius: 15px;
 }
 
 .icon:hover {

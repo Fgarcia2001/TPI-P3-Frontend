@@ -9,7 +9,9 @@ const HeaderMenu = () => {
         <Col>
           <img src={User} alt="Logo" className="icon" />
         </Col>
-        <Col className="titleIcon fs-1 ">Menú</Col>
+        <Col xs={6} className="titleIcon text-center">
+          <h1 className="fs-2 fw-bold m-0 py-2">Menú</h1>
+        </Col>
         <Col>
           <img src={Tray} alt="" className="llamado" />
         </Col>

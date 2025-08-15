@@ -138,8 +138,12 @@ const FormLogin = () => {
           ¿Olvidó su contraseña?
         </p>
 
-        <Button className="btnSubmit" type="submit">
+        <Button className="btnSubmit mb-3" type="submit">
           Iniciar sesión
+        </Button>
+
+        <Button className="btnSubmit bg-secondary" type="submit">
+          Seguir como invitado
         </Button>
 
         <p className={login ? "btn" : "btn"}>
