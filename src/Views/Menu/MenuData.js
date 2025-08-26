@@ -52,23 +52,12 @@ export const GetLocalStorage = () => {
 
 export const postLocalStorage = (item) => {
   const carritoActual = GetLocalStorage();
-
   const itemExiste = carritoActual.some((product) => product.id === item.id);
-
   if (!itemExiste) {
-    item["cant"] = 1;
     const carritoActualizado = [...carritoActual, item];
-
     localStorage.setItem("carrito", JSON.stringify(carritoActualizado));
     console.log("Producto añadido al carrito:", item);
   } else {
-    const prodSearch = carritoActual.find(
-      (producto) => producto.id === item.id
-    );
-
-    if (prodSearch) {
-      prodSearch.cant += 1;
-    }
-    console.log("El producto ya está en el carrito: " + item, item);
+    console.log("El producto ya está en el carrito:", item);
   }
 };

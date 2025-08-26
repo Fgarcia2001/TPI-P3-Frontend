@@ -1,14 +1,13 @@
-/*   const [filterItem, setFilterItem] = useState("");
-const ItemsRender =
-  filterItem !== ""
-    ? Products.filter((item) => item.category === filterItem)
-    : Products; */ // Con esto tengo el filtro de los productos por categoría
+/*   const [filterItem, setFilterItem] = useState(""); */
+
 import { Row, Col, Carousel } from "react-bootstrap";
 import Products from "../Products/Products";
 import Post from "../Post/Post";
 import BotonCategory from "../BotonCategory/BotonCategory";
 import avisos, { useFetch } from "../../../Views/Menu/MenuData";
 import "./MenuBody.css";
+import { useState } from "react";
+
 const MenuBody = () => {
   const {
     data: products,
@@ -34,6 +33,17 @@ const MenuBody = () => {
   };
 
   const categoryChunks = chunkArray(categories, 3);
+
+  const [valueFilter, setValueFilter] = useState("");
+
+  const handleChangeFilter = (value) => {
+    setValueFilter(value);
+  };
+
+  const ItemsRender =
+    valueFilter !== ""
+      ? products.filter((item) => item.categoriaId === valueFilter)
+      : products;
 
   return (
     <>
@@ -61,7 +71,12 @@ const MenuBody = () => {
               <Carousel.Item key={index} className="bg-white">
                 <div className="d-flex justify-content-center">
                   {chunk.map((category) => (
-                    <BotonCategory key={category.id} title={category.nombre} />
+                    <BotonCategory
+                      key={category.id}
+                      title={category.nombre}
+                      id={category.id}
+                      filterValue={handleChangeFilter}
+                    />
                   ))}
                 </div>
               </Carousel.Item>
@@ -72,7 +87,7 @@ const MenuBody = () => {
       <Row className="d-flex justify-content-center align-items-center flex-wrap SeccionProd">
         {loadingProducts && "Cargando los producctos"}
         {errorProducts && "Error al cargar los producctos"}
-        {products?.map((item) => (
+        {ItemsRender?.map((item) => (
           <Products
             key={item.id}
             title={item.nombre}

@@ -3,13 +3,7 @@ import Modal from "react-bootstrap/Modal";
 import { GetLocalStorage } from "../../../../Views/Menu/MenuData";
 import "./Cart.css";
 
-const Cart = ({
-  show,
-  handleClose,
-  cartItems,
-  onRemoveFromCart,
-  onClearCart,
-}) => {
+const Cart = ({ show, handleClose, onRemoveFromCart, onClearCart }) => {
   const prodCart = GetLocalStorage();
   return (
     <Modal show={show} onHide={handleClose} className="cart text-center">
@@ -49,7 +43,7 @@ const Cart = ({
         </Button>
       </Modal.Footer>
       <h4>
-        Precio total : $  
+        Precio total : $
         {prodCart.reduce((total, item) => total + item.precio, 0)}
       </h4>
     </Modal>
