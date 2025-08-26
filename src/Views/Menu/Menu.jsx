@@ -1,13 +1,18 @@
-import ContainerMenu from "../../Components/ConteinerMenu/ConteinerMenu";
-import FooterMenu from "../../Components/FooterMenu/FooterMenu";
-import HeaderMenu from "../../Components/HeaderMenu/HeaderMenu";
+import MenuBody from "../../Components/Menu/MenuBody/MenuBody";
+import FooterMenu from "../../Components/Menu/FooterMenu/FooterMenu";
+import HeaderMenu from "../../Components/Menu/HeaderMenu/HeaderMenu";
+import { useState } from "react";
 
 const Menu = () => {
+  const artInCart = useState(0);
+
   return (
     <>
       <HeaderMenu />
-      <ContainerMenu />
-      <FooterMenu />
+      <h1 className="mt-5">Ofertas del dia</h1>
+      <MenuBody></MenuBody>
+
+      <FooterMenu artInCart={artInCart} />
     </>
   );
 };
