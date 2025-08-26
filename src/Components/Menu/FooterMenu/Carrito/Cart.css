@@ -1,0 +1,11 @@
+.cart {
+  color: rgb(126, 103, 150);
+  
+}
+
+.active {
+  transform: scale(1.1);
+  background-color: rgb(223, 201, 201);
+  border-radius: 0.5rem;
+  padding: 0.2rem;
+}

@@ -1,0 +1,39 @@
+.iconFooter {
+  width: 2.5rem;
+  padding: 0.3rem;
+  transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+.iconFooter:active {
+  transform: scale(1.1);
+  background-color: rgb(232, 229, 229);
+  border-radius: 0.5rem;
+  padding: 0.2rem;
+}
+
+.footerPP {
+  background-color: #b19583;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.53);
+}
+
+.fondoDiv {
+  background-color: transparent;
+
+  padding: 0.5rem;
+  height: 6rem;
+}
+
+.active {
+  transform: scale(1.1);
+  background-color: rgb(223, 201, 201);
+  border-radius: 0.5rem;
+  padding: 0.2rem;
+}
+
+.cantArt {
+  background-color: darkblue;
+  color: white;
+  border-radius: 10rem;
+  padding: 1%;
+}
