@@ -1,8 +1,9 @@
 .cart {
   color: rgb(126, 103, 150);
-  
 }
-
+.bodyCart {
+  background-color: burlywood;
+}
 .active {
   transform: scale(1.1);
   background-color: rgb(223, 201, 201);

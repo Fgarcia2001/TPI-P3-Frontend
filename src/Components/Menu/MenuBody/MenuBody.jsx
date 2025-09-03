@@ -1,9 +1,6 @@
-/*   const [filterItem, setFilterItem] = useState(""); */
-
-import { Row, Col, Carousel } from "react-bootstrap";
+import { Row, Col, Form } from "react-bootstrap";
 import Products from "../Products/Products";
 import Post from "../Post/Post";
-import BotonCategory from "../BotonCategory/BotonCategory";
 import avisos, { useFetch } from "../../../Views/Menu/MenuData";
 import "./MenuBody.css";
 import { useState } from "react";
@@ -20,70 +17,71 @@ const MenuBody = () => {
     error: errorCategories,
   } = useFetch("http://localhost:3001/categories");
 
-  const chunkArray = (array, size) => {
-    if (!array) return [];
-    const chunkedArr = [];
-    let index = 0;
-    while (index < array.length) {
-      chunkedArr.push(array.slice(index, index + size));
-      index += size;
-    }
-    console.log(chunkedArr);
-    return chunkedArr;
-  };
-
-  const categoryChunks = chunkArray(categories, 3);
-
   const [valueFilter, setValueFilter] = useState("");
 
   const handleChangeFilter = (value) => {
     setValueFilter(value);
+    console.log(value);
+    console.log(products);
   };
 
   const ItemsRender =
     valueFilter !== ""
-      ? products.filter((item) => item.categoriaId === valueFilter)
+      ? products.filter((item) => item.categoriaId === parseInt(valueFilter))
       : products;
 
   return (
     <>
-      <Row className="p-2 ">
-        <Post avisos={avisos} />
+      <Row className="p-2 fondDiv">
+        <Col
+          lg={5}
+          md={12}
+          className="d-flex flex-column justify-content-center align-items-center text-center filterDiv"
+        >
+          <h1 className="fw-bold fs-1">OFERTAS DEL DÍA</h1>
+          <p className="w-75">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Assumenda
+            qui esse, similique odio rem nemo commodi quo cum quia consectetur
+            aliquam saepe totam debitis. Earum eum minus soluta atque ipsam.
+          </p>
+        </Col>
+        <Col lg={7} md={12} className="filterDiv">
+          <Post avisos={avisos} />
+        </Col>
       </Row>
-      <Row>
-        <Row className="shadow mt-3">
-          <Col>
-            <h1>Categorías</h1>
-          </Col>
-        </Row>
-        <Row className="shadow mb-3">
-          {loadingCategories && "Cargando las categorias"}
-          {errorCategories && "Error al cargar las categorias"}
 
-          {/* Carrusel de Categorías */}
-          <Carousel
-            indicators={false}
-            controls={true}
-            interval={null}
-            className=""
-          >
-            {categoryChunks.map((chunk, index) => (
-              <Carousel.Item key={index} className="bg-white">
-                <div className="d-flex justify-content-center">
-                  {chunk.map((category) => (
-                    <BotonCategory
-                      key={category.id}
-                      title={category.nombre}
-                      id={category.id}
-                      filterValue={handleChangeFilter}
-                    />
-                  ))}
-                </div>
-              </Carousel.Item>
-            ))}
-          </Carousel>
-        </Row>
+      <Row className="menu-filters-container shadow p-3 mb-5 rounded d-flex justify-content-around align-items-center">
+        <Col xs={12} md={6} lg={4} className="mb-3">
+          <Form.Group controlId="formCategorySelect">
+            <Form.Label className="fw-bold text-primary fs-4">
+              Categoría
+            </Form.Label>
+            <Form.Select
+              className="form-select-lg fs-4"
+              onChange={(e) => handleChangeFilter(e.target.value)}
+              value={valueFilter}
+            >
+              <option value="">Todas las categorías</option>
+              {categories?.map((cat) => (
+                <option key={cat.id} value={cat.id}>
+                  {cat.nombre}
+                </option>
+              ))}
+            </Form.Select>
+          </Form.Group>
+        </Col>
+        <Col xs={12} md={6} lg={4} className="mb-3">
+          <Form.Group controlId="formSearchInput">
+            <Form.Label className="fw-bold fs-4">Buscador</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Buscar productos..."
+              className="form-control-lg border-primary fs-4"
+            />
+          </Form.Group>
+        </Col>
       </Row>
+
       <Row className="d-flex justify-content-center align-items-center flex-wrap SeccionProd">
         {loadingProducts && "Cargando los producctos"}
         {errorProducts && "Error al cargar los producctos"}

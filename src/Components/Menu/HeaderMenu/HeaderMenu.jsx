@@ -5,7 +5,7 @@ import "./HeaderMenu.css";
 const HeaderMenu = () => {
   return (
     <>
-      <Row className="d-flex header-menu align-items-center m-bottom border-bottom border-3 shadow ">
+      <Row className="d-flex header-menu align-items-center border-bottom border-3 shadow ">
         <Col>
           <img src={User} alt="Logo" className="icon" />
         </Col>

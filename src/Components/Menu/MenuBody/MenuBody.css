@@ -1,5 +1,67 @@
 .SeccionProd {
   margin-bottom: 6rem;
+  padding: 1rem;
   padding-bottom: 6rem;
+  background-color: rgb(255, 255, 255);
+  backdrop-filter: blur(10px);
+  /*   background-repeat: no-repeat;
+  background-size: cover;
+ */
 }
 
+.fondDiv {
+  margin: 0%;
+  padding: 0%;
+  background-image: url(https://media.istockphoto.com/id/1221212982/es/vector/grano-de-caf%C3%A9-dibujado-con-un-fondo-sin-costuras-patr%C3%B3n-con-ca%C3%ADda-de-granos-de-caf%C3%A9-tel%C3%B3n-de.jpg?s=612x612&w=0&k=20&c=aqzl390gkw3X3tdzMK4NTW_aokHsmnUf1JzpAf4Deq0=);
+}
+
+.filterDiv {
+  background-color: rgba(
+    242,
+    225,
+    225,
+    0.097
+  ); /* Agrega un fondo semitransparente */
+  backdrop-filter: blur(1px);
+}
+
+/* Estilo del contenedor principal */
+.menu-filters-container {
+  background-color: #867676;
+  border: 1px solid #634949;
+  transition: all 0.3s ease-in-out;
+}
+
+/* Efecto hover en el contenedor */
+.menu-filters-container:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilo para los select y input */
+.form-control-lg,
+.form-select-lg {
+  border-radius: 8px; /* Bordes más redondeados */
+  border: 1px solid #ced4da; /* Borde más sutil */
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.075);
+}
+
+/* Efecto de foco en el campo de búsqueda y select */
+.form-control-lg:focus,
+.form-select-lg:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.25);
+  outline: 0;
+}
+
+/* Estilo para las etiquetas */
+.form-label {
+  font-weight: 600;
+  color: #343a40 !important;
+  font-size: 1.1em;
+}
+
+/* Estilo para el texto del placeholder */
+.form-control-lg::placeholder {
+  color: #a0a0a0;
+  font-style: italic;
+}

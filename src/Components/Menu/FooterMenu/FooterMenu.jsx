@@ -31,6 +31,9 @@ const FooterMenu = ({ artInCart }) => {
     setBotons({ home: true, heart: false, Cart: false });
   };
 
+  const handleRemoveItem = () =>{
+    
+  }
   return (
     <Container
       fluid
@@ -53,14 +56,14 @@ const FooterMenu = ({ artInCart }) => {
             className={botons.heart ? "iconFooter active" : "iconFooter"}
           />
         </Col>
-        <Col className="position-relative justify-content-center">
+        <Col className="position-relative d-flex justify-content-center align-items-center">
           <img
             src={Order}
             alt="Order"
             className={botons.Cart ? "iconFooter active" : "iconFooter"}
             onClick={() => handleIconClick("Cart")}
           />
-          <span className="position-absolute cantArt">{artInCart}</span>
+          {/* {artInCart > 0 && <span className="cantArt">{artInCart}</span>} */}
         </Col>
       </Row>
 

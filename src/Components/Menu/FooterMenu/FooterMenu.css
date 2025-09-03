@@ -1,39 +1,53 @@
 .iconFooter {
   width: 2.5rem;
-  padding: 0.3rem;
-  transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+  padding: 0.4rem;
+  border-radius: 0.7rem;
+  transition: all 0.3s ease-in-out;
+  cursor: pointer;
+  filter: grayscale(40%);
 }
 
-.iconFooter:active {
-  transform: scale(1.1);
-  background-color: rgb(232, 229, 229);
-  border-radius: 0.5rem;
-  padding: 0.2rem;
+.iconFooter:hover {
+  transform: scale(1.15);
+  filter: grayscale(0%);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+.active {
+  transform: scale(1.2);
+  background-color: #4d2609;
+  border-radius: 0.7rem;
+  padding: 0.3rem;
+  filter: grayscale(0%);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.35);
 }
 
 .footerPP {
-  background-color: #b19583;
-  border-radius: 0.5rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.53);
+  background: linear-gradient(135deg, #b19583, #d2b49c);
+  border-radius: 1rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
 }
 
 .fondoDiv {
   background-color: transparent;
-
-  padding: 0.5rem;
+  padding: 0.7rem;
   height: 6rem;
 }
 
-.active {
-  transform: scale(1.1);
-  background-color: rgb(223, 201, 201);
-  border-radius: 0.5rem;
-  padding: 0.2rem;
-}
+/* .cantArt {
+  position: absolute;
+  top: -0.5rem;
+  right: 1.2rem;
+  background: crimson;
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: bold;
+  border-radius: 50%;
+  padding: 0.35rem 0.55rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s ease-in-out;
+} */
 
-.cantArt {
-  background-color: darkblue;
-  color: white;
-  border-radius: 10rem;
-  padding: 1%;
+.cantArt:hover {
+  transform: scale(1.15);
 }

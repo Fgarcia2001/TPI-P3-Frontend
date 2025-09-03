@@ -1,19 +1,22 @@
 import { useState } from "react";
 import { Form, Button } from "react-bootstrap";
 import { initFormData, initErrores } from "./FormData";
+import { useFetch } from "../../Views/Menu/MenuData";
 
 const FormCrud = () => {
   const [dataProduct, setDataProduct] = useState(initFormData);
   const [inputsError, setInputsError] = useState(initErrores);
+  const [nuevaCategoria, setNuevaCategoria] = useState("");
+
+  const { data: categories } = useFetch("http://localhost:3001/categories");
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
 
-    // Modificación aquí para manejar el tipo 'number'
     if (type === "number") {
       setDataProduct({
         ...dataProduct,
-        [name]: parseFloat(value), // Parsea el string a un float
+        [name]: value ? parseFloat(value) : "",
       });
     } else {
       setDataProduct({
@@ -22,7 +25,6 @@ const FormCrud = () => {
       });
     }
 
-    // Limpiar el error cuando el usuario empieza a escribir
     setInputsError({
       ...inputsError,
       [`${name}Error`]: false,
@@ -32,32 +34,33 @@ const FormCrud = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Validaciones
     const newErrors = {};
-    if (!dataProduct.nombre) {
-      newErrors.nombreError = true;
+    if (!dataProduct.nombre) newErrors.nombreError = true;
+    if (dataProduct.categoria === "otra" && !nuevaCategoria) {
+      newErrors.categoriaError = true;
     }
-    /*   if (!dataProduct.categoria) {
-       newErrors.categoriaError = true;
-     } */
-    if (!dataProduct.descripcion) {
-      newErrors.descripcionError = true;
-    }
-    if (dataProduct.precio <= 0) {
-      newErrors.precioError = true;
-    }
+    if (!dataProduct.descripcion) newErrors.descripcionError = true;
+    if (dataProduct.precio <= 0) newErrors.precioError = true;
+
     setInputsError(newErrors);
 
-    // Si no hay errores, enviar el formulario
     if (Object.keys(newErrors).length === 0) {
-      console.log("Datos del formulario enviados:", dataProduct);
-      // Aquí puedes agregar la lógica para enviar los datos a una API
+      const payload = {
+        ...dataProduct,
+        categoria:
+          dataProduct.categoria === "otra"
+            ? nuevaCategoria
+            : dataProduct.categoria,
+      };
 
       fetch("http://localhost:3001/products", {
-        headers: { "content.type": "application/json" },
+        headers: { "content-type": "application/json" },
         method: "POST",
-        body: JSON.stringify(dataProduct),
-      }).then((res) => res.json());
+        body: JSON.stringify(payload),
+      })
+        .then((res) => res.json())
+        .then((data) => console.log("Respuesta backend:", data))
+        .catch((err) => console.error("Error al enviar:", err));
     }
   };
 
@@ -69,6 +72,7 @@ const FormCrud = () => {
             Formulario nueva cerveza
           </h4>
 
+          {/* Nombre */}
           <Form.Group className="mb-4">
             <Form.Label className="fw-bold">Producto :</Form.Label>
             <Form.Control
@@ -87,6 +91,7 @@ const FormCrud = () => {
             )}
           </Form.Group>
 
+          {/* Categoría */}
           <Form.Group className="mb-4">
             <Form.Label className="fw-bold">Categorías</Form.Label>
             <Form.Select
@@ -95,25 +100,41 @@ const FormCrud = () => {
               onChange={handleInputChange}
               value={dataProduct.categoria}
               isInvalid={inputsError.categoriaError}
-            ></Form.Select>
+            >
+              <option value="">Seleccione una categoría</option>
+              {categories?.map((cat) => (
+                <option key={cat.id} value={cat.nombre}>
+                  {cat.nombre}
+                </option>
+              ))}
+              <option value="otra">Otra categoría</option>
+            </Form.Select>
             {inputsError.categoriaError && (
               <Form.Control.Feedback type="invalid">
                 Seleccione una categoría.
               </Form.Control.Feedback>
             )}
-            <Form.Label className="mt-4 fw-bold">
+          </Form.Group>
+
+          {/* Nueva categoría */}
+          <Form.Group
+            className={
+              dataProduct.categoria === "otra" ? "mb-4 d-block" : "d-none"
+            }
+          >
+            <Form.Label className="mt-4 fw-bold ">
               Ingrese la categoría :
             </Form.Label>
             <Form.Control
               type="text"
-              name="nuevaCategoria"
               placeholder="Ingrese la categoría/tipo..."
               className="form-control rounded-3 shadow-sm mt-2"
-              onChange={handleInputChange}
-              value={dataProduct.nuevaCategoria}
+              onChange={(e) => setNuevaCategoria(e.target.value)}
+              value={nuevaCategoria}
             />
           </Form.Group>
 
+          {/* Descripción */}
           <Form.Group className="mb-4">
             <Form.Label className="fw-bold">Descripción :</Form.Label>
             <Form.Control
@@ -132,15 +153,19 @@ const FormCrud = () => {
             )}
           </Form.Group>
 
-          <Form.Group controlId="formFile" className="mb-3">
-            <Form.Label>Imagen del producto:</Form.Label>
+          {/* Imagen */}
+          <Form.Group controlId="" className="mb-3">
+            <Form.Label>Url imagen:</Form.Label>
             <Form.Control
-              type="file"
+              type="text"
               name="imagen"
+              placeholder="Ingrese la URL de la imagen..."
               onChange={handleInputChange}
+              value={dataProduct.imagen}
             />
           </Form.Group>
 
+          {/* Precio */}
           <Form.Label className="mt-4 fw-bold">Ingrese el precio :</Form.Label>
           <Form.Control
             type="number"
@@ -157,6 +182,7 @@ const FormCrud = () => {
             </Form.Control.Feedback>
           )}
 
+          {/* Disponible */}
           <Form.Check
             type="switch"
             name="disponible"

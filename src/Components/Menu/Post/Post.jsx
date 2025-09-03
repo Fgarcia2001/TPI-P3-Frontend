@@ -5,7 +5,10 @@ const Post = ({ avisos }) => {
   return (
     <Carousel fade className="carousel-aviso ">
       {avisos.map((aviso, index) => (
-        <Carousel.Item key={index} className="container-Carrousel">
+        <Carousel.Item
+          key={index}
+          className="container-Carrousel"
+        >
           <Image
             className="w-100 carousel-img "
             src={aviso.imageUrl}
@@ -18,3 +21,4 @@ const Post = ({ avisos }) => {
 };
 
 export default Post;
+

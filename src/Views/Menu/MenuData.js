@@ -54,10 +54,32 @@ export const postLocalStorage = (item) => {
   const carritoActual = GetLocalStorage();
   const itemExiste = carritoActual.some((product) => product.id === item.id);
   if (!itemExiste) {
+    item["cant"] = 1;
     const carritoActualizado = [...carritoActual, item];
     localStorage.setItem("carrito", JSON.stringify(carritoActualizado));
     console.log("Producto añadido al carrito:", item);
   } else {
+    const newItem = item;
+    newItem.cant += 1;
+    const carritoItemEliminado = carritoActual.filter(
+      (product) => product.id !== item.id
+    );
+    const carritoActualizado = [...carritoItemEliminado, newItem];
+    localStorage.setItem("carrito", JSON.stringify(carritoActualizado));
     console.log("El producto ya está en el carrito:", item);
+  }
+};
+
+export const deleteItemStorage = (item) => {
+  const carritoActual = GetLocalStorage();
+  const itemExiste = carritoActual.some((product) => product.id === item.id);
+  if (itemExiste) {
+    const carritoActualizado = carritoActual.filter(
+      (product) => product.id !== item.id
+    );
+    localStorage.setItem("carrito", JSON.stringify(carritoActualizado));
+    console.log("Producto eliminado del carrito:", item);
+  } else {
+    console.log("El producto no está en el carrito:", item);
   }
 };
