@@ -1,20 +1,39 @@
-import { Nav } from "react-bootstrap";
+import { useContext } from "react";
+import { AuthUserContext } from "../../../Services/AuthUserContext/AuthUserContext";
 import "./NavBar.css";
 
-const NavBar = () => {
-  const sections = ["Inicio", "Productos", "Ordenes", "Notificaciones"];
+const NavBar = ({ handleViewOption }) => {
+  const sections = [
+    "Inicio",
+    "Productos",
+    "Ordenes",
+    "Usuarios",
+    "Cerrar sesion",
+  ];
+  const { user, onLogout } = useContext(AuthUserContext);
   return (
-    <Nav defaultActiveKey="/home" className="flex-column navSize h-100">
-      <Nav.Link href="#" disabled className="shadow text-black fw-bold fs-5">
-        Mi tienda
-      </Nav.Link>
-      {sections.map((nameSection, index) => (
-        <Nav.Link className="" key={index} eventKey={`link-${index + 1}`}>
-          {/* <img src="" alt="" /> */}
-          <span>{nameSection}</span>
-        </Nav.Link>
-      ))}
-    </Nav>
+    <>
+      <div className="mt-3 mb-5">
+        <h1 className="fs-1 fw-bold">Tu tienda</h1>
+      </div>
+      <ul className="list-unstyled d-flex flex-column justify-content-start h-100 mt-5">
+        {sections.map((section, index) => (
+          <li
+            className="section bg-secondary border-bottom rounded-3"
+            key={index}
+            onClick={() => handleViewOption(section)}
+          >
+            <div>{}</div>
+            <div>
+              <p className="titleSection">{section}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
+      <div>
+        <h1>{user}</h1>
+      </div>
+    </>
   );
 };
 

@@ -1,12 +1,13 @@
-import FormLogin from "../../Components/FormLogin/FormLogin";
+import FormLogin from "../../Components/Auth/FormLogin/FormLogin";
 import { Image } from "react-bootstrap";
 import logo from "../../assets/Yummy-Coffe-logo.png";
 import "./AuthPage.css";
 
 const AuthPage = () => {
+  
   return (
     <div className="d-flex w-100 h-100">
-      <div className="portada"></div>
+      <div className="portada h-100"></div>
       {/* Podemos usar o "align-items-start ms-5" o  "text-center align-items-center"*/}
       <div className="form h-100 d-flex flex-column justify-content-center text-center align-items-center">
         <Image className="w-25 border-0" src={logo} thumbnail />

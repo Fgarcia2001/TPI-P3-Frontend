@@ -1,20 +1,8 @@
-import { useState, useEffect } from "react";
 
-export function useFetch(url) {
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  useEffect(() => {
-    setLoading(true);
-    fetch(url)
-      .then((response) => response.json())
-      .then((data) => setData(data))
-      .catch((error) => setError(error))
-      .finally(() => setLoading(false));
-  }, []);
-
-  return { data, loading, error };
-}
+import {
+  errorToast,
+  successToast,
+} from "../../Components/shared/notifications/notification";
 
 // Avisos harcodeados
 const avisos = [
@@ -54,19 +42,21 @@ export const postLocalStorage = (item) => {
   const carritoActual = GetLocalStorage();
   const itemExiste = carritoActual.some((product) => product.id === item.id);
   if (!itemExiste) {
-    item["cant"] = 1;
+    item["cantidad"] = 1;
     const carritoActualizado = [...carritoActual, item];
     localStorage.setItem("carrito", JSON.stringify(carritoActualizado));
     console.log("Producto añadido al carrito:", item);
+    successToast(`${item.nombre} añadido al carrito:`);
   } else {
     const newItem = item;
-    newItem.cant += 1;
+    newItem.cantidad += 1;
     const carritoItemEliminado = carritoActual.filter(
       (product) => product.id !== item.id
     );
     const carritoActualizado = [...carritoItemEliminado, newItem];
     localStorage.setItem("carrito", JSON.stringify(carritoActualizado));
-    console.log("El producto ya está en el carrito:", item);
+    console.log("El producto ya está en el carrito.", item);
+    successToast(`${item.nombre} añadido al carrito:`);
   }
 };
 
@@ -79,6 +69,7 @@ export const deleteItemStorage = (item) => {
     );
     localStorage.setItem("carrito", JSON.stringify(carritoActualizado));
     console.log("Producto eliminado del carrito:", item);
+    errorToast(`${item.nombre} ah sido eliminado del carrito.`);
   } else {
     console.log("El producto no está en el carrito:", item);
   }

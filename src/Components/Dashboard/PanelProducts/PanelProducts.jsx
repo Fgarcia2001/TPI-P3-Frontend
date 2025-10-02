@@ -1,153 +1,106 @@
 import { useState } from "react";
-import { Button, Table, Form } from "react-bootstrap";
-import { initFormData } from "../../FormsCRUD/FormData";
+import { initFormData } from "../../Dashboard/FormsCRUD/FormData";
+import ProductRow from "./ProductRow/ProductRow";
+import { Card } from "react-bootstrap";
+import "./PanelProducts.css";
+import { EditToast, errorToast } from "../../shared/notifications/notification";
+import useFetch from "../../../useFetch/useFetch";
 
 const PanelProducts = ({ products }) => {
+  const [editingId, setEditingId] = useState(null);
   const [dataProduct, setDataProduct] = useState(initFormData);
-  const [isEditable, setIsEditable] = useState(false);
+
+  const { put, del } = useFetch();
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
-
-    if (type === "number") {
-      setDataProduct({
-        ...dataProduct,
-        [name]: value ? parseFloat(value) : "",
-      });
-    } else {
-      setDataProduct({
-        ...dataProduct,
-        [name]: type === "checkbox" ? checked : value,
-      });
-    }
-  };
-
-  const handleEditProd = (item) => {
-    fetch(`http://localhost:3001/products/${item.id}`, {
-      headers: { "content-type": "application/json" },
-      method: "POST",
-      body: JSON.stringify(payload),
+    setDataProduct({
+      ...dataProduct,
+      [name]:
+        type === "number"
+          ? value
+            ? parseFloat(value)
+            : ""
+          : type === "checkbox"
+          ? checked
+          : value,
     });
   };
 
-  const HandleDeleteProd = (item) => {
-    fetch(`http://localhost:3001/products/${item.id}`, {
-      headers: { "content-type": "application/json" },
-      method: "DELETE",
-    });
+  const handleEdit = (item) => {
+    setEditingId(item.id);
+    setDataProduct(item);
   };
+
+  const handleConfirm = (item) => {
+    put(
+      `/products/${item.id}`,
+      true,
+      dataProduct,
+      (data) => {
+        EditToast(`El producto ${data.nombre} fue editado con éxito.`);
+        console.log("Respuesta backend:", data);
+      },
+      (err) => {
+        console.error("Error en edición:", err);
+        errorToast(err.message);
+      }
+    );
+    setEditingId(null);
+  };
+
+  const handleCancel = () => {
+    setEditingId(null);
+  };
+
+  const handleDelete = (item) => {
+    del(
+      `/products/${item.id}`,
+      true,
+      (data) => {
+        errorToast(`El producto ${data.nombre} fue eliminado con éxito.`);
+        console.log("Eliminado:", data);
+      },
+      (err) => {
+        console.error("Error al eliminar:", err);
+        errorToast(err.message);
+      }
+    );
+  };
+
   return (
-    <Table striped bordered hover responsive>
-      <thead>
-        <tr>
-          <th>Imagen</th>
-          <th>Nombre</th>
-          <th>Descripción</th>
-          <th>Precio</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        {products?.map((item) => (
-          <tr key={item.id}>
-            <td>
-              {isEditable ? (
-                <img
-                  src={item.imagen}
-                  alt={item.nombre}
-                  style={{ width: "150px", height: "auto" }}
-                />
-              ) : (
-                <Form.Control
-                  type="text"
-                  name="imagen"
-                  value={isEditable ? dataProduct.imagen : item.imagen}
-                  onChange={handleInputChange}
-                />
-              )}
-            </td>
-            <td>
-              {isEditable ? (
-                item.nombre
-              ) : (
-                <Form.Control
-                  type="text"
-                  name="nombre"
-                  placeholder="Ingrese el nombre..."
-                  className="form-control rounded-3 shadow-sm"
-                  value={item.nombre}
-                  onChange={handleInputChange}
-                />
-              )}
-            </td>
-            <td>
-              {isEditable ? (
-                item.descripcion
-              ) : (
-                <Form.Control
-                  type="text"
-                  name="descripcion"
-                  placeholder="Ingrese el descripcion..."
-                  className="form-control rounded-3 shadow-sm"
-                  value={item.descripcion}
-                  onChange={handleInputChange}
-                />
-              )}
-            </td>
-            <td>
-              {" "}
-              {isEditable ? (
-                item.precio
-              ) : (
-                <Form.Control
-                  type="text"
-                  name="precio"
-                  placeholder="Ingrese el precio..."
-                  className="form-control rounded-3 shadow-sm"
-                  value={item.precio}
-                  onChange={handleInputChange}
-                />
-              )}
-            </td>
-            {isEditable ? (
-              <td>
-                <Button
-                  onClick={() => setIsEditable(!isEditable)}
-                  variant="warning"
-                  className="w-auto m-2"
-                >
-                  Editar
-                </Button>
-                <Button
-                  onClick={() => HandleDeleteProd(item)}
-                  variant="danger"
-                  className="w-auto m-2"
-                >
-                  Eliminar
-                </Button>
-              </td>
-            ) : (
-              <td className="">
-                <Button
-                  onClick={() => handleEditProd(item)}
-                  variant="warning"
-                  className="w-auto m-2"
-                >
-                  Confirmar
-                </Button>
-                <Button
-                  onClick={() => setIsEditable(!isEditable)}
-                  variant="danger"
-                  className="w-auto m-2"
-                >
-                  Descartar
-                </Button>
-              </td>
-            )}
-          </tr>
-        ))}
-      </tbody>
-    </Table>
+    <>
+      <h2 className="text-center mb-4 text-primary">Lista de Productos</h2>
+      <Card className="productos-card table-responsive rounded-3 overflow-hidden">
+        <table className="table table-striped table-hover">
+          <thead>
+            <tr className="bg-light">
+              <th>Imagen</th>
+              <th>Nombre</th>
+              <th>Descripción</th>
+              <th>Precio</th>
+              <th>Disponible</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {products?.map((item) => (
+              <ProductRow
+                key={item.id}
+                item={item}
+                isEditing={editingId === item.id}
+                dataProduct={dataProduct}
+                onChange={handleInputChange}
+                onEdit={() => handleEdit(item)}
+                onConfirm={() => handleConfirm(item)}
+                onCancel={handleCancel}
+                onDelete={() => handleDelete(item)}
+              />
+            ))}
+          </tbody>
+        </table>
+      </Card>
+    </>
   );
 };
 

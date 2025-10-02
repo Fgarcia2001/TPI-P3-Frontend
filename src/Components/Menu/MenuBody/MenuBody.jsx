@@ -1,34 +1,70 @@
 import { Row, Col, Form } from "react-bootstrap";
 import Products from "../Products/Products";
 import Post from "../Post/Post";
-import avisos, { useFetch } from "../../../Views/Menu/MenuData";
+import avisos from "../../../Views/Menu/MenuData";
 import "./MenuBody.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import useFetch from "../../../useFetch/useFetch";
 
 const MenuBody = () => {
-  const {
-    data: products,
-    loading: loadingProducts,
-    error: errorProducts,
-  } = useFetch("http://localhost:3001/products");
-  const {
-    data: categories,
-    loading: loadingCategories,
-    error: errorCategories,
-  } = useFetch("http://localhost:3001/categories");
+  const [products, setProducts] = useState([]);
+  const [errorProducts, setErrorProducts] = useState("");
+
+  const [categories, setCategories] = useState([]);
+  const [errorCategories, setErrorCategories] = useState("");
+
+  const { get, isLoading } = useFetch();
+
+  useEffect(() => {
+    get(
+      "/products",
+      false,
+      (data) => setProducts(data),
+      (error) => setError(error)
+    );
+    get(
+      "/categories",
+      false,
+      (data) => setCategories(data),
+      (error) => setErrorCategories(error)
+    );
+  }, []);
+  console.log(products);
+  console.log(categories);
+  console.log(isLoading);
 
   const [valueFilter, setValueFilter] = useState("");
+  const [searchValue, setSearchValue] = useState("");
 
   const handleChangeFilter = (value) => {
     setValueFilter(value);
-    console.log(value);
-    console.log(products);
+    setSearchValue(""); // Limpia la búsqueda al cambiar la categoría
   };
 
-  const ItemsRender =
-    valueFilter !== ""
-      ? products.filter((item) => item.categoriaId === parseInt(valueFilter))
-      : products;
+  const handleSearch = (event) => {
+    setSearchValue(event.target.value);
+    setValueFilter(""); // Limpia la categoría al usar el buscador
+  };
+
+  const arrayProducts = () => {
+    let filteredItems = products.filter((item) => item.disponible) || [];
+
+    if (valueFilter !== "") {
+      filteredItems = filteredItems.filter(
+        (item) => item.categoriaId === parseInt(valueFilter)
+      );
+    }
+
+    if (searchValue) {
+      filteredItems = filteredItems.filter((item) =>
+        item.nombre.toLowerCase().includes(searchValue.toLowerCase())
+      );
+    }
+
+    return filteredItems;
+  };
+
+  const itemsToRender = arrayProducts();
 
   return (
     <>
@@ -62,11 +98,17 @@ const MenuBody = () => {
               value={valueFilter}
             >
               <option value="">Todas las categorías</option>
-              {categories?.map((cat) => (
-                <option key={cat.id} value={cat.id}>
-                  {cat.nombre}
-                </option>
-              ))}
+              {isLoading ? (
+                <option disabled>Cargando...</option>
+              ) : (
+                !errorCategories &&
+                categories &&
+                categories?.map((cat) => (
+                  <option key={cat.id} value={cat.id}>
+                    {cat.nombre}
+                  </option>
+                ))
+              )}
             </Form.Select>
           </Form.Group>
         </Col>
@@ -77,24 +119,28 @@ const MenuBody = () => {
               type="text"
               placeholder="Buscar productos..."
               className="form-control-lg border-primary fs-4"
+              onChange={handleSearch}
+              value={searchValue}
             />
           </Form.Group>
         </Col>
       </Row>
 
       <Row className="d-flex justify-content-center align-items-center flex-wrap SeccionProd">
-        {loadingProducts && "Cargando los producctos"}
-        {errorProducts && "Error al cargar los producctos"}
-        {ItemsRender?.map((item) => (
-          <Products
-            key={item.id}
-            title={item.nombre}
-            subTitle={item.descripcion}
-            imageUrl={item.imagen}
-            price={item.precio}
-            itemCart={item}
-          />
-        ))}
+        {isLoading && <p>Cargando los productos...</p>}
+        {errorProducts && <p>Error al cargar los productos.</p>}
+        {!isLoading && !errorProducts && itemsToRender.length > 0
+          ? itemsToRender.map((item) => (
+              <Products
+                key={item.id}
+                title={item.nombre}
+                subTitle={item.descripcion}
+                imageUrl={item.imagen}
+                price={item.precio}
+                itemCart={item}
+              />
+            ))
+          : !isLoading && !errorProducts && <p>No se encontraron productos.</p>}
       </Row>
     </>
   );

@@ -1,14 +1,32 @@
-import { useState } from "react";
+import { useState, useContext, useEffect } from "react";
 import { Form, Button } from "react-bootstrap";
-import { initFormData, initErrores } from "./FormData";
-import { useFetch } from "../../Views/Menu/MenuData";
+import { initFormData } from "./FormData";
+import useFetch from "../../../useFetch/useFetch"; 
+import { AuthUserContext } from "../../../Services/AuthUserContext/AuthUserContext";
+import {
+  errorToast,
+  successToast,
+} from "./../../shared/notifications/notification.js";
 
 const FormCrud = () => {
   const [dataProduct, setDataProduct] = useState(initFormData);
-  const [inputsError, setInputsError] = useState(initErrores);
   const [nuevaCategoria, setNuevaCategoria] = useState("");
+  const [categories, setCategories] = useState([]);
+  const [errorCategories, setErrorCategories] = useState(null);
 
-  const { data: categories } = useFetch("http://localhost:3001/categories");
+  const { token } = useContext(AuthUserContext);
+
+  const { get, post, isLoading } = useFetch();
+
+
+  useEffect(() => {
+    get(
+      "/categories",
+      false, // no es privada
+      (data) => setCategories(data),
+      (err) => setErrorCategories(err)
+    );
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -24,44 +42,50 @@ const FormCrud = () => {
         [name]: type === "checkbox" ? checked : value,
       });
     }
+  };
 
-    setInputsError({
-      ...inputsError,
-      [`${name}Error`]: false,
-    });
+  const controlErrors = () => {
+    if (
+      !dataProduct.nombre ||
+      !dataProduct.precio ||
+      !dataProduct.descripcion ||
+      !dataProduct.imagen
+    ) {
+      errorToast("Llene todos los campos requeridos.");
+      return true;
+    }
+    return false;
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const newErrors = {};
-    if (!dataProduct.nombre) newErrors.nombreError = true;
-    if (dataProduct.categoria === "otra" && !nuevaCategoria) {
-      newErrors.categoriaError = true;
+    if (controlErrors()) {
+      return;
     }
-    if (!dataProduct.descripcion) newErrors.descripcionError = true;
-    if (dataProduct.precio <= 0) newErrors.precioError = true;
 
-    setInputsError(newErrors);
+    const payload = {
+      ...dataProduct,
+      categoria:
+        dataProduct.categoria === "otra"
+          ? nuevaCategoria
+          : dataProduct.categoria,
+    };
 
-    if (Object.keys(newErrors).length === 0) {
-      const payload = {
-        ...dataProduct,
-        categoria:
-          dataProduct.categoria === "otra"
-            ? nuevaCategoria
-            : dataProduct.categoria,
-      };
-
-      fetch("http://localhost:3001/products", {
-        headers: { "content-type": "application/json" },
-        method: "POST",
-        body: JSON.stringify(payload),
-      })
-        .then((res) => res.json())
-        .then((data) => console.log("Respuesta backend:", data))
-        .catch((err) => console.error("Error al enviar:", err));
-    }
+    // ✅ usar el hook para post
+    post(
+      "/products",
+      true, // privada porque necesita token
+      payload,
+      (data) => {
+        successToast(`El producto ${data.nombre} fue agregado con éxito.`);
+        console.log("Respuesta backend:", data);
+      },
+      (err) => {
+        console.error("Error al enviar:", err);
+        errorToast("Hubo un error al crear el producto.");
+      }
+    );
   };
 
   return (
@@ -74,7 +98,9 @@ const FormCrud = () => {
 
           {/* Nombre */}
           <Form.Group className="mb-4">
-            <Form.Label className="fw-bold">Producto :</Form.Label>
+            <Form.Label className="fw-bold">
+              Producto <span className="text-danger">*</span> :
+            </Form.Label>
             <Form.Control
               type="text"
               name="nombre"
@@ -82,38 +108,34 @@ const FormCrud = () => {
               className="form-control rounded-3 shadow-sm"
               onChange={handleInputChange}
               value={dataProduct.nombre}
-              isInvalid={inputsError.nombreError}
             />
-            {inputsError.nombreError && (
-              <Form.Control.Feedback type="invalid">
-                El nombre es obligatorio.
-              </Form.Control.Feedback>
-            )}
           </Form.Group>
 
           {/* Categoría */}
           <Form.Group className="mb-4">
-            <Form.Label className="fw-bold">Categorías</Form.Label>
+            <Form.Label className="fw-bold">
+              Categorías <span className="text-danger">*</span> :
+            </Form.Label>
             <Form.Select
               name="categoria"
               className="form-control rounded-3 shadow-sm"
               onChange={handleInputChange}
               value={dataProduct.categoria}
-              isInvalid={inputsError.categoriaError}
             >
               <option value="">Seleccione una categoría</option>
-              {categories?.map((cat) => (
-                <option key={cat.id} value={cat.nombre}>
-                  {cat.nombre}
-                </option>
-              ))}
+              {isLoading ? (
+                <option disabled>Cargando categorías...</option>
+              ) : errorCategories ? (
+                <option disabled>Error al cargar categorías</option>
+              ) : (
+                categories.map((cat) => (
+                  <option key={cat.id} value={cat.id}>
+                    {cat.nombre}
+                  </option>
+                ))
+              )}
               <option value="otra">Otra categoría</option>
             </Form.Select>
-            {inputsError.categoriaError && (
-              <Form.Control.Feedback type="invalid">
-                Seleccione una categoría.
-              </Form.Control.Feedback>
-            )}
           </Form.Group>
 
           {/* Nueva categoría */}
@@ -123,7 +145,7 @@ const FormCrud = () => {
             }
           >
             <Form.Label className="mt-4 fw-bold ">
-              Ingrese la categoría :
+              Ingrese la categoría <span className="text-danger">*</span> :
             </Form.Label>
             <Form.Control
               type="text"
@@ -136,7 +158,9 @@ const FormCrud = () => {
 
           {/* Descripción */}
           <Form.Group className="mb-4">
-            <Form.Label className="fw-bold">Descripción :</Form.Label>
+            <Form.Label className="fw-bold">
+              Descripción <span className="text-danger">*</span>:
+            </Form.Label>
             <Form.Control
               type="text"
               name="descripcion"
@@ -144,18 +168,14 @@ const FormCrud = () => {
               className="form-control rounded-3 shadow-sm"
               onChange={handleInputChange}
               value={dataProduct.descripcion}
-              isInvalid={inputsError.descripcionError}
             />
-            {inputsError.descripcionError && (
-              <Form.Control.Feedback type="invalid">
-                La descripción es obligatoria.
-              </Form.Control.Feedback>
-            )}
           </Form.Group>
 
           {/* Imagen */}
           <Form.Group controlId="" className="mb-3">
-            <Form.Label>Url imagen:</Form.Label>
+            <Form.Label>
+              Url imagen <span className="text-danger">*</span>:
+            </Form.Label>
             <Form.Control
               type="text"
               name="imagen"
@@ -166,21 +186,17 @@ const FormCrud = () => {
           </Form.Group>
 
           {/* Precio */}
-          <Form.Label className="mt-4 fw-bold">Ingrese el precio :</Form.Label>
+          <Form.Label className="mt-4 fw-bold">
+            Ingrese el precio <span className="text-danger">*</span>:
+          </Form.Label>
           <Form.Control
             type="number"
             name="precio"
-            placeholder="Ingrese el precio (USD)..."
+            placeholder="Ingrese el precio ..."
             className="form-control rounded-3 shadow-sm"
             onChange={handleInputChange}
             value={dataProduct.precio}
-            isInvalid={inputsError.precioError}
           />
-          {inputsError.precioError && (
-            <Form.Control.Feedback type="invalid">
-              El precio debe ser mayor a 0.
-            </Form.Control.Feedback>
-          )}
 
           {/* Disponible */}
           <Form.Check
@@ -196,8 +212,9 @@ const FormCrud = () => {
             <Button
               type="submit"
               className="btn btn-primary btn-lg rounded-pill"
+              disabled={isLoading}
             >
-              Enviar
+              {isLoading ? "Enviando..." : "Enviar"}
             </Button>
           </div>
         </div>

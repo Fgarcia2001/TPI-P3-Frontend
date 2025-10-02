@@ -5,15 +5,18 @@ import {
   deleteItemStorage,
 } from "../../../../Views/Menu/MenuData";
 import "./Cart.css";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { AuthUserContext } from "../../../../Services/AuthUserContext/AuthUserContext";
 
-const Cart = ({ show, handleClose, onClearCart }) => {
+const Cart = ({ show, handleClose, onHandleBuy }) => {
   useEffect(() => {
     const prodsInCart = GetLocalStorage();
     setProdCat(prodsInCart);
   }, [show]);
 
   const [prodCart, setProdCat] = useState([]);
+
+  const { token } = useContext(AuthUserContext);
 
   const onRemoveFromCart = (item) => {
     console.log(prodCart);
@@ -50,7 +53,7 @@ const Cart = ({ show, handleClose, onClearCart }) => {
             />
             <h5>{item.nombre}</h5>
             <p>Precio: ${item.precio}</p>
-            <p>Cantidad : {item.cant}</p>
+            <p>Cantidad : {item.cantidad}</p>
             <Button variant="danger" onClick={() => onRemoveFromCart(item)}>
               Eliminar
             </Button>
@@ -61,13 +64,17 @@ const Cart = ({ show, handleClose, onClearCart }) => {
         <Button className="w-25" variant="warning" onClick={handleClose}>
           Close
         </Button>
-        <Button className="w-25" variant="success" onClick={onClearCart}>
+        <Button
+          className="w-25"
+          variant="success"
+          onClick={() => onHandleBuy(prodCart, token)}
+        >
           Comprar
         </Button>
       </Modal.Footer>
       <h4 className="fs-1">
         Precio total : $
-        {prodCart?.reduce((total, item) => total + item.precio * item.cant, 0)}
+        {prodCart?.reduce((total, item) => total + item.precio * item.cantidad, 0)}
       </h4>
     </Modal>
   );
