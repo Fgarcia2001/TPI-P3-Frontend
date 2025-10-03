@@ -1,9 +1,12 @@
 import { Col, Card, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { postLocalStorage } from "../../../Views/Menu/MenuData";
 import { AuthUserContext } from "../../../Services/AuthUserContext/AuthUserContext";
-import { successToast } from "../../shared/notifications/notification.js";
+import {
+  errorToast,
+  successToast,
+} from "../../shared/notifications/notification.js";
 import Heart from "../../../assets/FooterMenu/heart.png";
 import "./Products.css";
 import useFetch from "../../../useFetch/useFetch.jsx";
@@ -11,50 +14,79 @@ import useFetch from "../../../useFetch/useFetch.jsx";
 const Products = ({ title, subTitle, imageUrl, price, itemCart }) => {
   const navigate = useNavigate();
   const [isFlipped, setIsFlipped] = useState(false);
+  // Renombramos 'favorites' a 'isFavorite' para simplificar la lógica de un solo producto
+  const [isFavorite, setIsFavorite] = useState(false);
+  // Eliminamos 'error' ya que el manejo de errores es mejor en las funciones de fetch
+  // const [error, setError] = useState([]);
 
   const { idUser, token } = useContext(AuthUserContext);
-  const { post, get, del } = useFetch();
+  const { post, get, del } = useFetch(); // Asegúrate de que useFetch devuelva 'del'
 
   const handleToggleFlip = () => {
     setIsFlipped(!isFlipped);
   };
 
   useEffect(() => {
-    if (!token) {
-      setLoading(false);
+    if (!token || !itemCart?.id) {
+      setIsFavorite(false);
       return;
     }
 
-    get(
-      "/favorites",
-      true, // es privada
-      (data) => {
-        setProducts(data);
-        setLoading(false);
-      },
-      (err) => {
-        setError(err.message);
-        console.error("Error al obtener favoritos:", err);
-        setLoading(false);
-      }
-    );
-  }, [token, get]);
+    // Buscamos si ESTE producto está en favoritos
+    get("/favorites", true, (data) => {
+      // data debe ser un array de productos favoritos. Verificamos si itemCart.id está en el array.
+      const isCurrentlyFavorite = data.some((fav) => fav.id === itemCart.id);
+      setIsFavorite(isCurrentlyFavorite);
+    });
+  }, []); // itemCart.id es crucial para la dependencia
 
   const handleAddFavorites = (item) => {
-    post(
-      `/favorites/${item.id}`,
-      true,
-      {},
-      (data) => {
-        successToast(
-          `El producto ${data.nombre} fue agregado a favoritos con éxito.`
-        );
-        console.log("Respuesta backend:", data);
-      },
-      (err) => {
-        console.error("Error al enviar:", err);
-      }
-    );
+    // CORRECCIÓN: No se puede usar 'favorites.includes(item)' si 'favorites' no está definido
+    // y si 'favorites' fuera una lista de objetos, 'includes' no funcionaría correctamente.
+    // Usamos el estado local 'isFavorite' para determinar la acción (POST o DELETE).
+
+    if (isFavorite) {
+      // Acción: ELIMINAR (DELETE)
+      del(
+        `/favorites/${item.id}`,
+        true,
+        {},
+        (data) => {
+          // CORRECCIÓN: Usabas `errorToast` al eliminar, debe ser `successToast` (o `errorToast` solo si es un error)
+          successToast(
+            `El producto ${
+              item.nombre || item.title
+            } fue ELIMINADO de favoritos con éxito.`
+          );
+          setIsFavorite(false); // Actualiza el estado local
+          console.log("Respuesta backend DELETE:", data);
+        },
+        (err) => {
+          console.error("Error al eliminar:", err);
+          errorToast("Error al eliminar el producto de favoritos.");
+        }
+      );
+    } else {
+      // Acción: AGREGAR (POST)
+      post(
+        `/favorites/${item.id}`,
+        true,
+        {},
+        (data) => {
+          successToast(
+            `El producto ${
+              data.nombre || item.title
+            } fue AGREGADO a favoritos con éxito.`
+          );
+          setIsFavorite(true); // Actualiza el estado local
+          console.log("Respuesta backend POST:", data);
+        },
+        (err) => {
+          console.error("Error al agregar:", err);
+          errorToast("Error al agregar el producto a favoritos.");
+        }
+      );
+    }
   };
 
   return (
@@ -69,10 +101,13 @@ const Products = ({ title, subTitle, imageUrl, price, itemCart }) => {
             <div className="image-container position-relative">
               <Card.Img variant="top" src={imageUrl} className="rounded" />
               <Button
-                className="favorite position-absolute top-0 end-0"
+                // CORRECCIÓN: Se añade la clase 'is-favorite' condicional para el estilo visual
+                className={`favorite position-absolute top-0 end-0 ${
+                  isFavorite ? "is-favorite" : ""
+                }`}
                 onClick={() => handleAddFavorites(itemCart)}
               >
-                <img src={Heart} className=" w-100 h-100" />
+                <img src={Heart} className=" w-100 h-100" alt="Favorito" />
               </Button>
             </div>
             <Card.Body className="text-center">

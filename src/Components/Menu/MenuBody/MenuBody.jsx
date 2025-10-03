@@ -1,10 +1,12 @@
-import { Row, Col, Form } from "react-bootstrap";
+import { Row, Col, Form, Image } from "react-bootstrap";
 import Products from "../Products/Products";
 import Post from "../Post/Post";
 import avisos from "../../../Views/Menu/MenuData";
-import "./MenuBody.css";
 import { useEffect, useState } from "react";
 import useFetch from "../../../useFetch/useFetch";
+import "./MenuBody.css";
+import NoProducts from "../../../assets/i_need_coffee.png";
+import LoadingProducts from "../../../assets/pagina.PNG";
 
 const MenuBody = () => {
   const [products, setProducts] = useState([]);
@@ -38,12 +40,12 @@ const MenuBody = () => {
 
   const handleChangeFilter = (value) => {
     setValueFilter(value);
-    setSearchValue(""); // Limpia la búsqueda al cambiar la categoría
+    setSearchValue("");
   };
 
   const handleSearch = (event) => {
     setSearchValue(event.target.value);
-    setValueFilter(""); // Limpia la categoría al usar el buscador
+    setValueFilter("");
   };
 
   const arrayProducts = () => {
@@ -127,8 +129,13 @@ const MenuBody = () => {
       </Row>
 
       <Row className="d-flex justify-content-center align-items-center flex-wrap SeccionProd">
-        {isLoading && <p>Cargando los productos...</p>}
-        {errorProducts && <p>Error al cargar los productos.</p>}
+        {isLoading && <h2>Cargando los productos ...</h2>}
+        {errorProducts && (
+          <Col className="text-center">
+            <Image className="w-25 h-25" src={LoadingProducts} rounded />
+            <h2>Cargando los productos ...</h2>
+          </Col>
+        )}
         {!isLoading && !errorProducts && itemsToRender.length > 0
           ? itemsToRender.map((item) => (
               <Products
@@ -140,7 +147,13 @@ const MenuBody = () => {
                 itemCart={item}
               />
             ))
-          : !isLoading && !errorProducts && <p>No se encontraron productos.</p>}
+          : !isLoading &&
+            !errorProducts && (
+              <Col className="text-center">
+                <Image className="w-25 h-25" src={NoProducts} rounded />
+                <h2>No hay productos cargados...</h2>
+              </Col>
+            )}
       </Row>
     </>
   );

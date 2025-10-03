@@ -12,6 +12,11 @@ const AuthUserContextProvider = ({ children }) => {
   const [rol, setRol] = useState(rolValue);
   const [idUser, setIdUser] = useState(idUserValue);
 
+  const [products, setProducts] = [];
+  const [categories, setCategories] = [];
+
+  
+
   const handleLogin = (token, nombre, rol) => {
     setToken(token);
     localStorage.setItem("TokenJWT", token);

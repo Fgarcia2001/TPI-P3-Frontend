@@ -27,7 +27,7 @@ export const successToast = (message, config) => {
 };
 
 export const EditToast = (message, config) => {
-  return toast.warn(message, {
+  return toast.info(message, {
     ...defaultNotificationConfig,
     ...config,
   });
