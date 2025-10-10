@@ -32,7 +32,7 @@ const Favorites = () => {
         setLoading(false);
       }
     );
-  }, [token, get]);
+  }, []);
 
   return (
     <>

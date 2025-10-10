@@ -3,10 +3,14 @@ import { initFormData } from "../../Dashboard/FormsCRUD/FormData";
 import ProductRow from "./ProductRow/ProductRow";
 import { Card } from "react-bootstrap";
 import "./PanelProducts.css";
-import { EditToast, errorToast } from "../../shared/notifications/notification";
+import {
+  EditToast,
+  errorToast,
+  successToast,
+} from "../../shared/notifications/notification";
 import useFetch from "../../../useFetch/useFetch";
 
-const PanelProducts = ({ products }) => {
+const PanelProducts = ({ products, onDeleteProduct }) => {
   const [editingId, setEditingId] = useState(null);
   const [dataProduct, setDataProduct] = useState(initFormData);
 
@@ -39,14 +43,21 @@ const PanelProducts = ({ products }) => {
       dataProduct,
       (data) => {
         EditToast(`El producto ${data.nombre} fue editado con éxito.`);
-        console.log("Respuesta backend:", data);
+        console.log("Respuesta backend:", data); 
+
+        const updatedProducts = products.map((p) =>
+          p.id === data.id ? data : p
+        ); 
+        onDeleteProduct(updatedProducts); 
+
+        setEditingId(null);
       },
       (err) => {
         console.error("Error en edición:", err);
         errorToast(err.message);
+        setEditingId(null); // También sal del modo edición en caso de error
       }
-    );
-    setEditingId(null);
+    ); // 🛑 ELIMINA la línea setEditingId(null); de aquí.
   };
 
   const handleCancel = () => {
@@ -58,8 +69,12 @@ const PanelProducts = ({ products }) => {
       `/products/${item.id}`,
       true,
       (data) => {
-        errorToast(`El producto ${data.nombre} fue eliminado con éxito.`);
+        successToast(`El producto ${data.nombre} fue eliminado con éxito.`);
         console.log("Eliminado:", data);
+        const NewDataProducts = products.filter(
+          (product) => product.id != item.id
+        );
+        onDeleteProduct(NewDataProducts);
       },
       (err) => {
         console.error("Error al eliminar:", err);

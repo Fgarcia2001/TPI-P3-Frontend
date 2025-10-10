@@ -10,17 +10,17 @@ import {
 import Heart from "../../../assets/FooterMenu/heart.png";
 import "./Products.css";
 import useFetch from "../../../useFetch/useFetch.jsx";
+import { CartContext } from "../../../Services/Cart/CartContext.jsx";
 
 const Products = ({ title, subTitle, imageUrl, price, itemCart }) => {
   const navigate = useNavigate();
-  const [isFlipped, setIsFlipped] = useState(false);
-  // Renombramos 'favorites' a 'isFavorite' para simplificar la lógica de un solo producto
-  const [isFavorite, setIsFavorite] = useState(false);
-  // Eliminamos 'error' ya que el manejo de errores es mejor en las funciones de fetch
-  // const [error, setError] = useState([]);
 
-  const { idUser, token } = useContext(AuthUserContext);
-  const { post, get, del } = useFetch(); // Asegúrate de que useFetch devuelva 'del'
+  const [isFlipped, setIsFlipped] = useState(false);
+  const [isFavorite, setIsFavorite] = useState(false);
+
+  const { token } = useContext(AuthUserContext);
+  const { AddCart } = useContext(CartContext);
+  const { post, get, del } = useFetch();
 
   const handleToggleFlip = () => {
     setIsFlipped(!isFlipped);
@@ -31,28 +31,19 @@ const Products = ({ title, subTitle, imageUrl, price, itemCart }) => {
       setIsFavorite(false);
       return;
     }
-
-    // Buscamos si ESTE producto está en favoritos
     get("/favorites", true, (data) => {
-      // data debe ser un array de productos favoritos. Verificamos si itemCart.id está en el array.
       const isCurrentlyFavorite = data.some((fav) => fav.id === itemCart.id);
       setIsFavorite(isCurrentlyFavorite);
     });
-  }, []); // itemCart.id es crucial para la dependencia
+  }, []);
 
   const handleAddFavorites = (item) => {
-    // CORRECCIÓN: No se puede usar 'favorites.includes(item)' si 'favorites' no está definido
-    // y si 'favorites' fuera una lista de objetos, 'includes' no funcionaría correctamente.
-    // Usamos el estado local 'isFavorite' para determinar la acción (POST o DELETE).
-
     if (isFavorite) {
-      // Acción: ELIMINAR (DELETE)
       del(
         `/favorites/${item.id}`,
         true,
         {},
         (data) => {
-          // CORRECCIÓN: Usabas `errorToast` al eliminar, debe ser `successToast` (o `errorToast` solo si es un error)
           successToast(
             `El producto ${
               item.nombre || item.title
@@ -67,7 +58,6 @@ const Products = ({ title, subTitle, imageUrl, price, itemCart }) => {
         }
       );
     } else {
-      // Acción: AGREGAR (POST)
       post(
         `/favorites/${item.id}`,
         true,
@@ -107,7 +97,11 @@ const Products = ({ title, subTitle, imageUrl, price, itemCart }) => {
                 }`}
                 onClick={() => handleAddFavorites(itemCart)}
               >
-                <img src={Heart} className=" w-100 h-100" alt="Favorito" />
+                {isFavorite ? (
+                  <i className="bi bi-bookmark-heart-fill fs-4"></i>
+                ) : (
+                  <i className="bi bi-bookmark-heart fs-4"></i>
+                )}
               </Button>
             </div>
             <Card.Body className="text-center">
@@ -117,7 +111,7 @@ const Products = ({ title, subTitle, imageUrl, price, itemCart }) => {
                 <Button
                   variant="primary"
                   className="btn-buy-animated"
-                  onClick={() => postLocalStorage(itemCart)}
+                  onClick={() => AddCart(itemCart)}
                 >
                   Comprar
                 </Button>

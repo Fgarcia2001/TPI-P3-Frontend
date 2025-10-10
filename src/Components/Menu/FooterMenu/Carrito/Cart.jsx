@@ -7,6 +7,7 @@ import {
 import "./Cart.css";
 import { useContext, useEffect, useState } from "react";
 import { AuthUserContext } from "../../../../Services/AuthUserContext/AuthUserContext";
+import { CartContext } from "../../../../Services/Cart/CartContext";
 
 const Cart = ({ show, handleClose, onHandleBuy }) => {
   useEffect(() => {
@@ -16,6 +17,7 @@ const Cart = ({ show, handleClose, onHandleBuy }) => {
 
   const [prodCart, setProdCat] = useState([]);
 
+  const { RemoveItemCart, cart } = useContext(CartContext);
   const { token } = useContext(AuthUserContext);
 
   const onRemoveFromCart = (item) => {
@@ -24,13 +26,18 @@ const Cart = ({ show, handleClose, onHandleBuy }) => {
     setProdCat(prodInCart);
     console.log(prodCart);
     deleteItemStorage(item);
+    RemoveItemCart(item);
   };
+
+  console.log(cart);
   return (
     <Modal
       show={show}
       onHide={handleClose}
       size="lg"
       className="cart text-center"
+      backdrop="static"
+      keyboard={false}
     >
       <Modal.Header className=" d-flex justify-content-center ">
         <Modal.Title className="fs-2 fw-bold">CARRITO DE COMPRAS</Modal.Title>
@@ -62,7 +69,7 @@ const Cart = ({ show, handleClose, onHandleBuy }) => {
       </Modal.Body>
       <Modal.Footer className="d-flex justify-content-between">
         <Button className="w-25" variant="warning" onClick={handleClose}>
-          Close
+          Cerrar
         </Button>
         <Button
           className="w-25"
@@ -74,7 +81,10 @@ const Cart = ({ show, handleClose, onHandleBuy }) => {
       </Modal.Footer>
       <h4 className="fs-1">
         Precio total : $
-        {prodCart?.reduce((total, item) => total + item.precio * item.cantidad, 0)}
+        {prodCart?.reduce(
+          (total, item) => total + item.precio * item.cantidad,
+          0
+        )}
       </h4>
     </Modal>
   );

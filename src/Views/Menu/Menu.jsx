@@ -5,7 +5,6 @@ import { useState } from "react";
 import Favorites from "../../Components/Menu/Favorites/Favorites";
 
 const Menu = () => {
-  const artInCart = useState(1);
   const [viewFavorite, setViewFavorite] = useState(false);
   const HandleFavoritesView = (value) => {
     setViewFavorite(value);
@@ -16,10 +15,7 @@ const Menu = () => {
 
       {viewFavorite ? <Favorites /> : <MenuBody></MenuBody>}
 
-      <FooterMenu
-        artInCart={artInCart}
-        HandleFavoritesView={HandleFavoritesView}
-      />
+      <FooterMenu HandleFavoritesView={HandleFavoritesView} />
     </>
   );
 };

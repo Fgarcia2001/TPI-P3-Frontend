@@ -1,14 +1,14 @@
 import { useState, useContext, useEffect } from "react";
 import { Form, Button } from "react-bootstrap";
 import { initFormData } from "./FormData";
-import useFetch from "../../../useFetch/useFetch"; 
+import useFetch from "../../../useFetch/useFetch";
 import { AuthUserContext } from "../../../Services/AuthUserContext/AuthUserContext";
 import {
   errorToast,
   successToast,
 } from "./../../shared/notifications/notification.js";
 
-const FormCrud = () => {
+const FormCrud = ({ onAddProduct, onAddCategories }) => {
   const [dataProduct, setDataProduct] = useState(initFormData);
   const [nuevaCategoria, setNuevaCategoria] = useState("");
   const [categories, setCategories] = useState([]);
@@ -18,11 +18,10 @@ const FormCrud = () => {
 
   const { get, post, isLoading } = useFetch();
 
-
   useEffect(() => {
     get(
       "/categories",
-      false, // no es privada
+      false,
       (data) => setCategories(data),
       (err) => setErrorCategories(err)
     );
@@ -72,7 +71,6 @@ const FormCrud = () => {
           : dataProduct.categoria,
     };
 
-    // ✅ usar el hook para post
     post(
       "/products",
       true, // privada porque necesita token
@@ -80,6 +78,10 @@ const FormCrud = () => {
       (data) => {
         successToast(`El producto ${data.nombre} fue agregado con éxito.`);
         console.log("Respuesta backend:", data);
+        onAddProduct(payload);
+        if (dataProduct.categoria === "otra") {
+          onAddCategories(payload.categoria);
+        }
       },
       (err) => {
         console.error("Error al enviar:", err);
@@ -93,7 +95,7 @@ const FormCrud = () => {
       <fieldset>
         <div className="card shadow-lg rounded-4 p-5 bg-white border-0">
           <h4 className="mb-4 text-center text-primary fw-semibold">
-            Formulario nueva cerveza
+            Formulario nuevo producto
           </h4>
 
           {/* Nombre */}
@@ -129,7 +131,7 @@ const FormCrud = () => {
                 <option disabled>Error al cargar categorías</option>
               ) : (
                 categories.map((cat) => (
-                  <option key={cat.id} value={cat.id}>
+                  <option key={cat.id} value={cat.nombre}>
                     {cat.nombre}
                   </option>
                 ))

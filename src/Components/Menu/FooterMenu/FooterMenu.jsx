@@ -1,40 +1,34 @@
 import { Container, Row, Col } from "react-bootstrap";
-import Heart from "../../../assets/FooterMenu/heart.png";
-import Home from "../../../assets/FooterMenu/home.png";
 import Cart from "../FooterMenu/Carrito/Cart";
 import "./FooterMenu.css";
-import { useState } from "react";
-import Order from "../../../assets/FooterMenu/clipboard.png";
+import { useContext, useState } from "react";
+import { CartContext } from "../../../Services/Cart/CartContext";
 
-const FooterMenu = ({ artInCart, HandleFavoritesView }) => {
+const FooterMenu = ({ HandleFavoritesView }) => {
   const [botons, setBotons] = useState({
     home: true,
     heart: false,
-    Cart: false,
+    cart: false,
   });
 
   const [showCartModal, setShowCartModal] = useState(false);
 
+  const { cart } = useContext(CartContext);
   const handleIconClick = (iconName) => {
     setBotons({
       home: iconName === "home",
       heart: iconName === "heart",
-      Cart: iconName === "Cart",
+      cart: iconName === "cart",
     });
-    if (iconName === "home") {
-      HandleFavoritesView(false);
-    }
-    if (iconName === "heart") {
-      HandleFavoritesView(true);
-    }
-    if (iconName === "Cart") {
-      setShowCartModal(true);
-    }
+
+    if (iconName === "home") HandleFavoritesView(false);
+    if (iconName === "heart") HandleFavoritesView(true);
+    if (iconName === "cart") setShowCartModal(true);
   };
 
   const handleCloseCartModal = () => {
     setShowCartModal(false);
-    setBotons({ home: true, heart: false, Cart: false });
+    setBotons({ home: true, heart: false, cart: false });
   };
 
   const handleBuy = (prodCart, token) => {
@@ -56,34 +50,22 @@ const FooterMenu = ({ artInCart, HandleFavoritesView }) => {
       body: orderBody,
     })
       .then(async (res) => {
-        // 1. Verificar si la respuesta fue exitosa (código 200-299)
         if (!res.ok) {
-          // 2. Si no es exitosa, intentamos leer el cuerpo.
-          // Usamos .text() en lugar de .json() para manejar respuestas no-JSON como "Validation error"
           const errorText = await res.text();
-
-          // 3. Lanzamos un error que incluye el mensaje real del servidor
-          // Esto se capturará en el bloque .catch()
           throw new Error(
             `Error ${res.status} al crear la orden: ${errorText}`
           );
         }
-
-        // 4. Si es exitosa, procesamos la respuesta como JSON
         return res.json();
       })
       .then((newOrder) => {
         console.log("¡Orden creada con éxito!", newOrder);
-        // Lógica de éxito...
       })
       .catch((error) => {
-        // 5. Capturamos y mostramos el error (incluyendo el mensaje de validación)
         console.error("Hubo un problema al intentar la compra:", error.message);
-        // Puedes usar aquí un errorToast(error.message);
       });
-    console.log(orderBody);
-    console.log(prodCart);
   };
+
   return (
     <Container
       fluid
@@ -91,29 +73,38 @@ const FooterMenu = ({ artInCart, HandleFavoritesView }) => {
     >
       <Row className="footerPP text-center py-3 w-75 rounded-4">
         <Col>
-          <img
-            src={Home}
-            alt="Home"
+          <i
+            className={
+              botons.home
+                ? "bi bi-house-fill iconFooter active"
+                : "bi bi-house iconFooter"
+            }
             onClick={() => handleIconClick("home")}
-            className={botons.home ? "iconFooter active" : "iconFooter"}
-          />
+          ></i>
         </Col>
+
         <Col>
-          <img
-            src={Heart}
-            alt="Favorites"
+          <i
+            className={
+              botons.heart
+                ? "bi bi-heart-fill iconFooter active"
+                : "bi bi-heart iconFooter"
+            }
             onClick={() => handleIconClick("heart")}
-            className={botons.heart ? "iconFooter active" : "iconFooter"}
-          />
+          ></i>
         </Col>
+
         <Col className="position-relative d-flex justify-content-center align-items-center">
-          <img
-            src={Order}
-            alt="Order"
-            className={botons.Cart ? "iconFooter active" : "iconFooter"}
-            onClick={() => handleIconClick("Cart")}
-          />
-          {/* {artInCart > 0 && <span className="cantArt">{artInCart}</span>} */}
+          <i
+            className={
+              botons.cart
+                ? "bi bi-bag-fill iconFooter active"
+                : "bi bi-bag iconFooter"
+            }
+            onClick={() => handleIconClick("cart")}
+          >
+            {cart.length > 0 && <span className="cantArt">{cart.length}</span>}
+          </i>
         </Col>
       </Row>
 

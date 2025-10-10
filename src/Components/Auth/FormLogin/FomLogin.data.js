@@ -1,10 +1,10 @@
 export const initFormData = {
   contrasena: "",
-  email: "", 
+  email: "",
   nombre: "",
   apellido: "",
   telefono: "",
-  rol: "cliente",
+  rol: "sysadmin",
 };
 
 export const initErrores = {

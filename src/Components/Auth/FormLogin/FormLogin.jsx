@@ -12,7 +12,6 @@ import {
 } from "../../shared/notifications/notification";
 import useFetch from "../../../useFetch/useFetch";
 
-
 const FormLogin = () => {
   const [isRegisterMode, setIsRegisterMode] = useState(false);
   const [formData, setFormData] = useState(initFormData);
@@ -105,7 +104,7 @@ const FormLogin = () => {
           <p className="text-danger m-0">El correo es requerido.</p>
         )}
         <Form.Control
-          className="inputLogin"
+          className="inputLogin fs-4"
           type="email"
           name="email"
           placeholder="Correo"
@@ -120,7 +119,7 @@ const FormLogin = () => {
           <p className="text-danger m-0">La contraseña es requerida.</p>
         )}
         <Form.Control
-          className="inputLogin"
+          className="inputLogin fs-4"
           type="password"
           name="contrasena"
           placeholder="Contraseña"
@@ -138,7 +137,7 @@ const FormLogin = () => {
               <p className="text-danger m-0">El nombre es requerido.</p>
             )}
             <Form.Control
-              className="inputLogin"
+              className="inputLogin fs-4"
               type="text"
               name="nombre"
               placeholder="Nombre"
@@ -153,7 +152,7 @@ const FormLogin = () => {
               <p className="text-danger m-0">El apellido es requerido.</p>
             )}
             <Form.Control
-              className="inputLogin"
+              className="inputLogin fs-4"
               type="text"
               name="apellido"
               placeholder="Apellido"
@@ -168,7 +167,7 @@ const FormLogin = () => {
               <p className="text-danger m-0">El teléfono es requerido.</p>
             )}
             <Form.Control
-              className="inputLogin"
+              className="inputLogin fs-4"
               type="tel"
               name="telefono"
               placeholder="Teléfono"
@@ -181,12 +180,6 @@ const FormLogin = () => {
       )}
 
       <div className="d-flex flex-column justify-content-center align-items-center">
-        {!isRegisterMode && (
-          <p className="btn text-primary" onClick={toggleMode}>
-            ¿Olvidó su contraseña?
-          </p>
-        )}
-
         <Button
           className="btnSubmit mb-3"
           type="submit"
@@ -201,14 +194,14 @@ const FormLogin = () => {
           </Button>
         )}
 
-        <p className="btn">
+        <p className="">
           <span>
             {isRegisterMode
               ? "¿Ya tienes una cuenta?"
-              : "¿Aún no tienes una cuenta?"}{" "}
+              : "¿Aún no tienes una cuenta?"}
           </span>
-          <span className="text-warning" onClick={toggleMode}>
-            {isRegisterMode ? "Regresar" : "Registrarse gratis"}
+          <span className="text-warning login" onClick={toggleMode}>
+            {isRegisterMode ? " Regresar" : " Registrarse gratis"}
           </span>
         </p>
       </div>
