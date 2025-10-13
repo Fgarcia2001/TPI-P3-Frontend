@@ -4,7 +4,7 @@ export const initFormData = {
   nombre: "",
   apellido: "",
   telefono: "",
-  rol: "sysadmin",
+  rol: "cliente",
 };
 
 export const initErrores = {

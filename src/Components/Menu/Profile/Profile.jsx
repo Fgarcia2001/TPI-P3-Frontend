@@ -20,12 +20,16 @@ function Profile({ show, onHide }) {
             <h1>¡Bienvenido a Yummy Coffee !</h1>
           </div>
           {/* <Offcanvas.Title className="fs-1 fw-bold">{user}</Offcanvas.Title> */}
-          <Button className="rounded-pill px-4 m-4">Ordenes</Button>
-          <Button className="rounded-pill px-4 m-4">Ajuste</Button>
+          <Button className="rounded-pill px-4 m-4 button-Profile">
+            Ordenes
+          </Button>
+          <Button className="rounded-pill px-4 m-4 button-Profile">
+            Ajuste
+          </Button>
           {(rol === "admin" || rol === "sysadmin") && (
             <Button
               onClick={() => navigate("/admin")}
-              className="rounded-pill px-4 m-4"
+              className="rounded-pill px-4 m-4 button-Profile"
             >
               Panel de administrador
             </Button>

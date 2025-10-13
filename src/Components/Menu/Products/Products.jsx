@@ -106,7 +106,7 @@ const Products = ({ title, subTitle, imageUrl, price, itemCart }) => {
             </div>
             <Card.Body className="text-center">
               <Card.Title className="fw-bold">{title}</Card.Title>
-              <Card.Text className="text-muted">${price}</Card.Text>
+              <Card.Text className="text-muted fs-4">${price}</Card.Text>
               <div className="d-flex justify-content-between align-items-center mt-3">
                 <Button
                   variant="primary"

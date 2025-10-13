@@ -1,19 +1,27 @@
-import { useContext } from "react";
-import { Navigate } from "react-router";
+import { useContext, useEffect, useState } from "react";
+import { Navigate } from "react-router-dom";
 import { AuthUserContext } from "../../../Services/AuthUserContext/AuthUserContext";
 import { IsTokenValid } from "./Protected.helpers";
-
-// SI TIENE TOKEN A MENUU Y SI NO TIENE A AUTH
+import { errorToast } from "../../shared/notifications/notification";
 
 const ProtectedDashboard = ({ children }) => {
   const { rol, token } = useContext(AuthUserContext);
+  const [redirectPath, setRedirectPath] = useState(null);
 
-  const hasValidToken = IsTokenValid(token);
-  const hasAccess = rol === "admin" || rol === "sysadmin";
+  useEffect(() => {
+    const hasValidToken = IsTokenValid(token);
+    const hasAccess = rol === "admin" || rol === "sysadmin";
 
-  if (!hasValidToken || !hasAccess) {
-    return <Navigate to="/Auth" replace />;
-  }
+    if (!hasValidToken) {
+      errorToast("Acceso denegado: token inválido");
+      setRedirectPath("/Auth");
+    } else if (!hasAccess) {
+      errorToast("Acceso denegado: credenciales insuficientes");
+      setRedirectPath("/");
+    }
+  }, [rol, token]);
+
+  if (redirectPath) return <Navigate to={redirectPath} replace />;
 
   return children;
 };
