@@ -3,6 +3,11 @@ import Cart from "../FooterMenu/Carrito/Cart";
 import "./FooterMenu.css";
 import { useContext, useState } from "react";
 import { CartContext } from "../../../Services/Cart/CartContext";
+import useFetch from "../../../useFetch/useFetch";
+import {
+  successToast,
+  errorToast,
+} from "../../shared/notifications/notification";
 
 const FooterMenu = ({ HandleFavoritesView }) => {
   const [botons, setBotons] = useState({
@@ -13,7 +18,9 @@ const FooterMenu = ({ HandleFavoritesView }) => {
 
   const [showCartModal, setShowCartModal] = useState(false);
 
-  const { cart } = useContext(CartContext);
+  const { cart, clearCart } = useContext(CartContext);
+  const { post } = useFetch();
+
   const handleIconClick = (iconName) => {
     setBotons({
       home: iconName === "home",
@@ -31,39 +38,34 @@ const FooterMenu = ({ HandleFavoritesView }) => {
     setBotons({ home: true, heart: false, cart: false });
   };
 
-  const handleBuy = (prodCart, token) => {
+  const handleBuy = (prodCart) => {
     const productosSimplificados = prodCart.map((item) => ({
       id: parseInt(item.id),
       cantidad: item.cantidad,
     }));
 
-    const orderBody = JSON.stringify({
+    const orderBody = {
       productos: productosSimplificados,
-    });
+    };
 
-    fetch(`http://localhost:3001/orders`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: orderBody,
-    })
-      .then(async (res) => {
-        if (!res.ok) {
-          const errorText = await res.text();
-          throw new Error(
-            `Error ${res.status} al crear la orden: ${errorText}`
-          );
-        }
-        return res.json();
-      })
-      .then((newOrder) => {
+    post(
+      "/orders",
+      true,
+      orderBody,
+      (newOrder) => {
         console.log("¡Orden creada con éxito!", newOrder);
-      })
-      .catch((error) => {
-        console.error("Hubo un problema al intentar la compra:", error.message);
-      });
+        successToast("¡Orden creada con éxito!");
+
+        // Opcionalmente limpiar el carrito después de la compra
+        if (clearCart) clearCart();
+
+        handleCloseCartModal();
+      },
+      (error) => {
+        console.error("Hubo un problema al intentar la compra:", error);
+        errorToast(error.message || "Error al crear la orden");
+      }
+    );
   };
 
   return (

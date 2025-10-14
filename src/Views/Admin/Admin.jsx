@@ -41,6 +41,7 @@ const Admin = () => {
           {viewOption === "Productos" && <AbmProducts />}
           {viewOption === "Usuarios" && <ViewUser />}
           {viewOption === "Ordenes" && <ViewOrders />}
+          
         </Col>
       </Row>
     </>

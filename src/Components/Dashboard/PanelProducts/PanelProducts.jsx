@@ -57,7 +57,7 @@ const PanelProducts = ({ products, onDeleteProduct }) => {
         errorToast(err.message);
         setEditingId(null); // También sal del modo edición en caso de error
       }
-    ); // 🛑 ELIMINA la línea setEditingId(null); de aquí.
+    ); 
   };
 
   const handleCancel = () => {

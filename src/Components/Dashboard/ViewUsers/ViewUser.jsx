@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { Card } from "react-bootstrap";
+import { Card, Col, Row } from "react-bootstrap";
 import { AuthUserContext } from "../../../Services/AuthUserContext/AuthUserContext";
 import UserRow from "./UserRow/UserRow";
 import {
@@ -7,7 +7,6 @@ import {
   successToast,
 } from "../../shared/notifications/notification";
 import useFetch from "../../../useFetch/useFetch";
-
 
 const ViewUser = () => {
   const [users, setUsers] = useState([]);
@@ -17,7 +16,7 @@ const ViewUser = () => {
   const [dataUser, setDataUser] = useState({});
 
   const { token, rol } = useContext(AuthUserContext);
-  const { get, put, del } = useFetch(); 
+  const { get, put, del } = useFetch();
 
   const getUsers = () => {
     if (!token) {
@@ -105,45 +104,55 @@ const ViewUser = () => {
 
   return (
     <>
-      <h2 className="text-center mb-4 text-primary">Lista de usuarios</h2>
-      <Card className="productos-card table-responsive rounded-3 m-4 overflow-hidden">
-        <table className="table table-striped table-hover">
-          <thead>
-            <tr className="bg-light">
-              <th>ID</th>
-              <th>Nombre</th>
-              <th>Apellido</th>
-              <th>Email</th>
-              <th>Teléfono</th>
-              <th>Rol</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {users.length > 0 ? (
-              users.map((item) => (
-                <UserRow
-                  key={item.id}
-                  item={item}
-                  isEditing={editingId === item.id}
-                  dataUser={dataUser}
-                  onChange={handleInputChange}
-                  onEdit={handleEdit}
-                  onConfirm={() => handleConfirm(item.id)}
-                  onCancel={handleCancel}
-                  onDelete={() => handleDelete(item)}
-                />
-              ))
-            ) : (
-              <tr>
-                <td colSpan="7" className="text-center">
-                  No se encontraron usuarios.
-                </td>
+      <Row className="m-3 pb-3 border-bottom align-items-center">
+        <Col>
+          <h2 className="mb-0 fw-semibold">Gestión de Usuarios</h2>
+          <p className="text-muted mb-0 mt-1">
+            Total: {users.length} usuario{users.length !== 1 ? "s" : ""}
+          </p>
+        </Col>
+      </Row>
+      <div className="bg-white p-3 rounded border">
+        <h2 className="mb-0 fw-semibold">Lista de Usuarios</h2>
+        <Card className="productos-card table-responsive rounded-3 m-4 overflow-hidden">
+          <table className="table table-striped table-hover">
+            <thead>
+              <tr className="bg-light">
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Email</th>
+                <th>Teléfono</th>
+                <th>Rol</th>
+                <th>Acciones</th>
               </tr>
-            )}
-          </tbody>
-        </table>
-      </Card>
+            </thead>
+            <tbody>
+              {users.length > 0 ? (
+                users.map((item) => (
+                  <UserRow
+                    key={item.id}
+                    item={item}
+                    isEditing={editingId === item.id}
+                    dataUser={dataUser}
+                    onChange={handleInputChange}
+                    onEdit={handleEdit}
+                    onConfirm={() => handleConfirm(item.id)}
+                    onCancel={handleCancel}
+                    onDelete={() => handleDelete(item)}
+                  />
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="7" className="text-center">
+                    No se encontraron usuarios.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </Card>
+      </div>
     </>
   );
 };

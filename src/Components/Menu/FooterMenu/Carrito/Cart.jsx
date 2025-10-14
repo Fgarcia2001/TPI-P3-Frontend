@@ -10,15 +10,15 @@ import { AuthUserContext } from "../../../../Services/AuthUserContext/AuthUserCo
 import { CartContext } from "../../../../Services/Cart/CartContext";
 
 const Cart = ({ show, handleClose, onHandleBuy }) => {
+  const [prodCart, setProdCat] = useState([]);
+
+  const { RemoveItemCart, clearCart } = useContext(CartContext);
+  const { token } = useContext(AuthUserContext);
+
   useEffect(() => {
     const prodsInCart = GetLocalStorage();
     setProdCat(prodsInCart);
   }, [show]);
-
-  const [prodCart, setProdCat] = useState([]);
-
-  const { RemoveItemCart, cart } = useContext(CartContext);
-  const { token } = useContext(AuthUserContext);
 
   const onRemoveFromCart = (item) => {
     console.log(prodCart);
@@ -29,7 +29,14 @@ const Cart = ({ show, handleClose, onHandleBuy }) => {
     RemoveItemCart(item);
   };
 
-  console.log(cart);
+  const OnHandleSubmitBuy = () => {
+    onHandleBuy(prodCart, token);
+    clearCart();
+    localStorage.removeItem("carrito");
+    setProdCat([]);
+    handleClose();
+  };
+
   return (
     <Modal
       show={show}
@@ -47,25 +54,29 @@ const Cart = ({ show, handleClose, onHandleBuy }) => {
           Estos son los productos que has agregado a tu carrito:
         </p>
         {/* Código para listar los productos  */}
-        {prodCart?.map((item) => (
-          <div
-            key={item.id}
-            className="d-flex justify-content-between my-4 border rounded-5 border-5 p-3 shadow bg-white"
-          >
-            <img
-              src={item.imagen}
-              alt=""
-              style={{ width: "100px" }}
-              className="rounded-3"
-            />
-            <h5>{item.nombre}</h5>
-            <p>Precio: ${item.precio}</p>
-            <p>Cantidad : {item.cantidad}</p>
-            <Button variant="danger" onClick={() => onRemoveFromCart(item)}>
-              Eliminar
-            </Button>
-          </div>
-        ))}
+        {prodCart?.length > 0 ? (
+          prodCart.map((item) => (
+            <div
+              key={item.id}
+              className="d-flex justify-content-between my-4 border rounded-5 border-5 p-3 shadow bg-white"
+            >
+              <img
+                src={item.imagen}
+                alt=""
+                style={{ width: "100px" }}
+                className="rounded-3"
+              />
+              <h5>{item.nombre}</h5>
+              <p>Precio: ${item.precio}</p>
+              <p>Cantidad : {item.cantidad}</p>
+              <Button variant="danger" onClick={() => onRemoveFromCart(item)}>
+                Eliminar
+              </Button>
+            </div>
+          ))
+        ) : (
+          <p className="text-muted">Tu carrito está vacío</p>
+        )}
       </Modal.Body>
       <Modal.Footer className="d-flex justify-content-between">
         <Button className="w-25" variant="warning" onClick={handleClose}>
@@ -74,7 +85,8 @@ const Cart = ({ show, handleClose, onHandleBuy }) => {
         <Button
           className="w-25"
           variant="success"
-          onClick={() => onHandleBuy(prodCart, token)}
+          onClick={OnHandleSubmitBuy}
+          disabled={!prodCart || prodCart.length === 0}
         >
           Comprar
         </Button>

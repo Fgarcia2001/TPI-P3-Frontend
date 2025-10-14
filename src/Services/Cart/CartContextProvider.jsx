@@ -19,12 +19,24 @@ const CartContextProvider = ({ children }) => {
     setCart(updatedCart);
   };
 
+  const clearCart = () => {
+    // Limpiar el localStorage
+    localStorage.removeItem("Carrito");
+    // Limpiar el estado del carrito
+    setCart([]);
+  };
+
   return (
-    <CartContext
-      value={{ cart, AddCart: AddCart, RemoveItemCart: RemoveItemCart }}
+    <CartContext.Provider
+      value={{
+        cart,
+        AddCart,
+        RemoveItemCart,
+        clearCart,
+      }}
     >
       {children}
-    </CartContext>
+    </CartContext.Provider>
   );
 };
 

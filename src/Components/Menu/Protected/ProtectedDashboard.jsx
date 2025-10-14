@@ -19,7 +19,7 @@ const ProtectedDashboard = ({ children }) => {
       errorToast("Acceso denegado: credenciales insuficientes");
       setRedirectPath("/");
     }
-  }, [rol, token]);
+  }, []);
 
   if (redirectPath) return <Navigate to={redirectPath} replace />;
 

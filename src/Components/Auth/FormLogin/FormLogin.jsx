@@ -81,7 +81,7 @@ const FormLogin = () => {
       (data) => {
         if (!isRegisterMode && data.token) {
           const decoded = jwtDecode(data.token);
-          onLogin(data.token, data.user.nombre, decoded.rol);
+          onLogin(data.token, data.user.nombre, decoded.rol, decoded.id);
           navigate("/");
           successToast(`${data.user.nombre} ha iniciado sesión con éxito.`);
         } else if (isRegisterMode) {

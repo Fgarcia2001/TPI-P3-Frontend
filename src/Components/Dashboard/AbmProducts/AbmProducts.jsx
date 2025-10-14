@@ -1,20 +1,16 @@
-import { Button, Col, Row } from "react-bootstrap";
+import { Button, Col, Row, Container } from "react-bootstrap";
 import FormCrud from "../../Dashboard/FormsCRUD/FormCrud";
 import { useEffect, useState } from "react";
-
 import PanelProducts from "../PanelProducts/PanelProducts";
 import useFetch from "../../../useFetch/useFetch";
 import Search from "../../shared/search/Search";
 
 const AbmProducts = () => {
   const [addProduct, setAddProduct] = useState(false);
-
   const [valueFilter, setValueFilter] = useState("");
   const [searchValue, setSearchValue] = useState("");
-
   const [products, setProducts] = useState([]);
   const [errorProducts, setErrorProducts] = useState("");
-
   const [categories, setCategories] = useState([]);
   const [errorCategories, setErrorCategories] = useState("");
 
@@ -37,9 +33,11 @@ const AbmProducts = () => {
   const onAddProduct = (data) => {
     setProducts((prevProduct) => [data, ...prevProduct]);
   };
+
   const onAddCategories = (data) => {
     setCategories((prevCategories) => [data, ...prevCategories]);
   };
+
   const onDeleteProduct = (data) => {
     setProducts(data);
   };
@@ -65,11 +63,27 @@ const AbmProducts = () => {
   const itemsToRender = arrayProducts();
 
   return (
-    <>
-      {/* 🔹 FILTROS + BOTÓN EN MISMA ALTURA */}
-      <Row className="align-items-center justify-content-between p-3">
-        {!addProduct && (
-          <Col xs={12} lg={9}>
+    <Container fluid className="p-3">
+      <Row className="mb-3 pb-3 border-bottom align-items-center">
+        <Col xs={12} md={8}>
+          <h2 className="mb-0 fw-semibold">
+            {addProduct ? "Agregar Producto" : "Vista de Productos"}
+          </h2>
+        </Col>
+        <Col xs={12} md={4} className="text-md-end mt-3 mt-md-0">
+          <Button
+            variant={addProduct ? "secondary" : "success"}
+            onClick={() => setAddProduct(!addProduct)}
+            className="w-100 w-md-auto"
+          >
+            {addProduct ? "← Regresar" : "+ Nuevo Producto"}
+          </Button>
+        </Col>
+      </Row>
+
+      {!addProduct && (
+        <Row className="mb-3">
+          <Col xs={12}>
             <Search
               entity="productos"
               value={searchValue}
@@ -81,35 +95,29 @@ const AbmProducts = () => {
               errorCategories={errorCategories}
             />
           </Col>
-        )}
+        </Row>
+      )}
 
-        <Col xs={12} lg={3} className="text-lg-end text-center mt-3 mt-lg-0">
-          <Button
-            size="lg"
-            className="w-100 w-lg-auto"
-            onClick={() => setAddProduct(!addProduct)}
-          >
-            {addProduct ? "Regresar" : "Agregar Producto"}
-          </Button>
+      {/* Contenido Principal */}
+      <Row>
+        <Col xs={12}>
+          <div className="bg-white p-3 rounded border">
+            {addProduct ? (
+              <FormCrud
+                data={products}
+                onAddProduct={onAddProduct}
+                onAddCategories={onAddCategories}
+              />
+            ) : (
+              <PanelProducts
+                products={itemsToRender}
+                onDeleteProduct={onDeleteProduct}
+              />
+            )}
+          </div>
         </Col>
       </Row>
-
-      {/* 🔹 CONTENIDO PRINCIPAL */}
-      <Row className="d-flex justify-content-center align-items-center flex-wrap SeccionProd m-2">
-        {addProduct ? (
-          <FormCrud
-            data={products}
-            onAddProduct={onAddProduct}
-            onAddCategories={onAddCategories}
-          />
-        ) : (
-          <PanelProducts
-            products={itemsToRender}
-            onDeleteProduct={onDeleteProduct}
-          />
-        )}
-      </Row>
-    </>
+    </Container>
   );
 };
 
