@@ -67,24 +67,17 @@ const MenuBody = () => {
 
   return (
     <>
-      <Row className="p-2 fondDiv">
-        <Col
-          lg={5}
-          md={12}
-          className="d-flex flex-column justify-content-center align-items-center text-center filterDiv"
-        >
-          <h1 className="fw-bold fs-1">OFERTAS DEL DÍA</h1>
-          <p className="w-75">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Assumenda
-            qui esse, similique odio rem nemo commodi quo cum quia consectetur
-            aliquam saepe totam debitis. Earum eum minus soluta atque ipsam.
-          </p>
-        </Col>
-        <Col lg={7} md={12} className="filterDiv">
+      <Row className="fondDiv">
+        <Col className="filterDiv d-flex justify-content-center align-items-center py-5">
           <Post avisos={avisos} />
         </Col>
       </Row>
-
+      <div className="products-header mb-4">
+        <h2 className="products-title">Nuestros Productos</h2>
+        <p className="products-subtitle text-muted">
+          Descubrí nuestra selección de cafés y productos especiales
+        </p>
+      </div>
       <Search
         entity="productos"
         value={searchValue}

@@ -76,7 +76,7 @@ const AbmProducts = () => {
             onClick={() => setAddProduct(!addProduct)}
             className="w-100 w-md-auto"
           >
-            {addProduct ? "← Regresar" : "+ Nuevo Producto"}
+            {addProduct ? " Regresar" : " Nuevo Producto"}
           </Button>
         </Col>
       </Row>

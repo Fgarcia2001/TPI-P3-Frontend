@@ -20,9 +20,7 @@ const CartContextProvider = ({ children }) => {
   };
 
   const clearCart = () => {
-    // Limpiar el localStorage
     localStorage.removeItem("Carrito");
-    // Limpiar el estado del carrito
     setCart([]);
   };
 

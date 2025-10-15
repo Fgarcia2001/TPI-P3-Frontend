@@ -1,13 +1,11 @@
 import { Col, Card, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
-import { postLocalStorage } from "../../../Views/Menu/MenuData";
 import { AuthUserContext } from "../../../Services/AuthUserContext/AuthUserContext";
 import {
   errorToast,
   successToast,
 } from "../../shared/notifications/notification.js";
-import Heart from "../../../assets/FooterMenu/heart.png";
 import "./Products.css";
 import useFetch from "../../../useFetch/useFetch.jsx";
 import { CartContext } from "../../../Services/Cart/CartContext.jsx";
@@ -42,14 +40,14 @@ const Products = ({ title, subTitle, imageUrl, price, itemCart }) => {
       del(
         `/favorites/${item.id}`,
         true,
-        {},
         (data) => {
+          // ← Eliminá el {} vacío
           successToast(
             `El producto ${
               item.nombre || item.title
             } fue ELIMINADO de favoritos con éxito.`
           );
-          setIsFavorite(false); // Actualiza el estado local
+          setIsFavorite(false);
           console.log("Respuesta backend DELETE:", data);
         },
         (err) => {
@@ -68,7 +66,7 @@ const Products = ({ title, subTitle, imageUrl, price, itemCart }) => {
               data.nombre || item.title
             } fue AGREGADO a favoritos con éxito.`
           );
-          setIsFavorite(true); // Actualiza el estado local
+          setIsFavorite(true);
           console.log("Respuesta backend POST:", data);
         },
         (err) => {

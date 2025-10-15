@@ -46,14 +46,14 @@ const ProductRow = ({
       <td>
         {isEditing ? (
           <Form.Control
-            as="textarea" // Se usa un textarea para la descripción
+            as="textarea"
             rows={3}
             name="descripcion"
             value={dataProduct.descripcion ?? ""}
             onChange={onChange}
           />
         ) : (
-          item.descripcion
+          <span className="fw-bold">{item.descripcion}</span>
         )}
       </td>
       <td>
@@ -65,27 +65,23 @@ const ProductRow = ({
             onChange={onChange}
           />
         ) : (
-          `$${item.precio.toFixed(2)}` // Formato de moneda
+          `$${item.precio.toFixed(2)}`
         )}
       </td>
-      <td>
+      <td className="align-items-center">
         {isEditing ? (
-          <Form.Check
-            type="switch"
-            name="disponible"
-            checked={dataProduct.disponible}
-            onChange={onChange}
-          />
-        ) : (
           <>
-            <h6>{item.disponible ? "Disponible" : "No disponible"}</h6>
             <Form.Check
               type="switch"
               name="disponible"
-              checked={item.disponible}
-              disabled
+              checked={dataProduct.disponible}
+              onChange={onChange}
             />
           </>
+        ) : (
+          <span className="fw-bold">
+            {item.disponible ? "Disponible" : "No disponible"}
+          </span>
         )}
       </td>
       <td>

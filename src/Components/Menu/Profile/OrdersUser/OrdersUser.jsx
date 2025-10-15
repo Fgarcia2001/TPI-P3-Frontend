@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { Button, Card, Spinner } from "react-bootstrap";
 import useFetch from "../../../../useFetch/useFetch";
 import { AuthUserContext } from "../../../../Services/AuthUserContext/AuthUserContext";
+import "./OrdersUser.css"
 
 const OrdersUser = ({ onBack }) => {
   const { idUser } = useContext(AuthUserContext);
@@ -77,19 +78,19 @@ const OrdersUser = ({ onBack }) => {
       <div className="w-100 overflow-auto flex-grow-1 px-3">
         {orders.map((order) => {
           const status = getSimpleStatus(order.estado);
-          // 💡 LÓGICA DE ESTILO SIMPLIFICADA CON TERNARIOS ANIDADOS:
+
           const statusClass =
             status === "aceptado"
-              ? "bg-success" // ✅ Aceptado -> Verde
+              ? "bg-success"
               : status === "pendiente"
-              ? "bg-warning text-dark" // ⏳ Pendiente -> Amarillo
+              ? "bg-warning text-dark"
               : status === "cancelado"
-              ? "bg-danger" // ❌ Cancelado -> Rojo
-              : "bg-secondary"; // Por defecto
+              ? "bg-danger"
+              : "bg-secondary";
 
           return (
             <Card key={order.id} className="mb-3 shadow-sm">
-              <Card.Header className="bg-secondary text-white">
+              <Card.Header className="text-white orden">
                 <strong>Orden #{order.id}</strong>
               </Card.Header>
               <Card.Body>
@@ -104,7 +105,7 @@ const OrdersUser = ({ onBack }) => {
                           <strong>{producto.nombre}</strong> ×{" "}
                           {producto.cantidad}
                         </span>
-                        <span className="text-success fw-bold">
+                        <span className="text-secondary fw-bold">
                           $
                           {((producto.precio ?? 0) * producto.cantidad).toFixed(
                             2
@@ -124,14 +125,11 @@ const OrdersUser = ({ onBack }) => {
                 <div className="d-flex justify-content-between align-items-center">
                   <span>
                     <strong>Estado:</strong>{" "}
-                    <span
-                      // 💡 USO DE LA CLASE SIMPLE
-                      className={`badge ${statusClass}`}
-                    >
+                    <span className={`badge ${statusClass}`}>
                       {order.estado}
                     </span>
                   </span>
-                  <span className="fs-5 fw-bold text-primary">
+                  <span className="fs-5 fw-bold text-success">
                     Total: ${(order.total ?? order.price ?? 0).toFixed(2)}
                   </span>
                 </div>
