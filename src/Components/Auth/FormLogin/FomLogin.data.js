@@ -1,14 +1,16 @@
 export const initFormData = {
-  usuario: "",
   contrasena: "",
-  correo: " ",
+  email: "",
   nombre: "",
   apellido: "",
-  repetirContrasena: "",
   telefono: "",
+  rol: "cliente",
 };
 
 export const initErrores = {
-  usuario: false,
+  email: false,
   contrasena: false,
+  nombre: false,
+  apellido: false,
+  telefono: false,
 };

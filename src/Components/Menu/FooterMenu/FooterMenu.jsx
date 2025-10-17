@@ -1,34 +1,71 @@
 import { Container, Row, Col } from "react-bootstrap";
-import Heart from "../../../assets/FooterMenu/heart.png";
-import Home from "../../../assets/FooterMenu/home.png";
 import Cart from "../FooterMenu/Carrito/Cart";
 import "./FooterMenu.css";
-import { useState } from "react";
-import Order from "../../../assets/FooterMenu/clipboard.png";
+import { useContext, useState } from "react";
+import { CartContext } from "../../../Services/Cart/CartContext";
+import useFetch from "../../../useFetch/useFetch";
+import {
+  successToast,
+  errorToast,
+} from "../../shared/notifications/notification";
 
-const FooterMenu = ({ artInCart }) => {
+const FooterMenu = ({ HandleFavoritesView }) => {
   const [botons, setBotons] = useState({
     home: true,
     heart: false,
-    Cart: false,
+    cart: false,
   });
 
   const [showCartModal, setShowCartModal] = useState(false);
+
+  const { cart, clearCart } = useContext(CartContext);
+  const { post } = useFetch();
 
   const handleIconClick = (iconName) => {
     setBotons({
       home: iconName === "home",
       heart: iconName === "heart",
-      Cart: iconName === "Cart",
+      cart: iconName === "cart",
     });
-    if (iconName === "Cart") {
-      setShowCartModal(true);
-    }
+
+    if (iconName === "home") HandleFavoritesView(false);
+    if (iconName === "heart") HandleFavoritesView(true);
+    if (iconName === "cart") setShowCartModal(true);
   };
 
   const handleCloseCartModal = () => {
     setShowCartModal(false);
-    setBotons({ home: true, heart: false, Cart: false });
+    setBotons({ home: true, heart: false, cart: false });
+  };
+
+  const handleBuy = (prodCart) => {
+    const productosSimplificados = prodCart.map((item) => ({
+      id: parseInt(item.id),
+      cantidad: item.cantidad,
+    }));
+
+    const orderBody = {
+      productos: productosSimplificados,
+    };
+
+    post(
+      "/orders",
+      true,
+      orderBody,
+      (newOrder) => {
+        console.log("¡Orden creada con éxito!", newOrder);
+        successToast("¡Orden creada con éxito!");
+
+        // Opcionalmente limpiar el carrito después de la compra
+        if (clearCart) clearCart();
+
+        handleCloseCartModal();
+      },
+      (error) => {
+        console.error("Hubo un problema al intentar la compra:", error);
+        errorToast(error.message || "Error al crear la orden");
+      }
+    );
   };
 
   return (
@@ -38,33 +75,46 @@ const FooterMenu = ({ artInCart }) => {
     >
       <Row className="footerPP text-center py-3 w-75 rounded-4">
         <Col>
-          <img
-            src={Home}
-            alt="Home"
+          <i
+            className={
+              botons.home
+                ? "bi bi-house-fill iconFooter active"
+                : "bi bi-house iconFooter"
+            }
             onClick={() => handleIconClick("home")}
-            className={botons.home ? "iconFooter active" : "iconFooter"}
-          />
+          ></i>
         </Col>
+
         <Col>
-          <img
-            src={Heart}
-            alt="Favorites"
+          <i
+            className={
+              botons.heart
+                ? "bi bi-heart-fill iconFooter active"
+                : "bi bi-heart iconFooter"
+            }
             onClick={() => handleIconClick("heart")}
-            className={botons.heart ? "iconFooter active" : "iconFooter"}
-          />
+          ></i>
         </Col>
-        <Col className="position-relative justify-content-center">
-          <img
-            src={Order}
-            alt="Order"
-            className={botons.Cart ? "iconFooter active" : "iconFooter"}
-            onClick={() => handleIconClick("Cart")}
-          />
-          <span className="position-absolute cantArt">{artInCart}</span>
+
+        <Col className="position-relative d-flex justify-content-center align-items-center">
+          <i
+            className={
+              botons.cart
+                ? "bi bi-bag-fill iconFooter active"
+                : "bi bi-bag iconFooter"
+            }
+            onClick={() => handleIconClick("cart")}
+          >
+            {cart.length > 0 && <span className="cantArt">{cart.length}</span>}
+          </i>
         </Col>
       </Row>
 
-      <Cart show={showCartModal} handleClose={handleCloseCartModal} />
+      <Cart
+        show={showCartModal}
+        handleClose={handleCloseCartModal}
+        onHandleBuy={handleBuy}
+      />
     </Container>
   );
 };

@@ -1,87 +1,121 @@
-/*   const [filterItem, setFilterItem] = useState("");
-const ItemsRender =
-  filterItem !== ""
-    ? Products.filter((item) => item.category === filterItem)
-    : Products; */ // Con esto tengo el filtro de los productos por categoría
-import { Row, Col, Carousel } from "react-bootstrap";
+import { Row, Col, Image } from "react-bootstrap";
 import Products from "../Products/Products";
 import Post from "../Post/Post";
-import BotonCategory from "../BotonCategory/BotonCategory";
-import avisos, { useFetch } from "../../../Views/Menu/MenuData";
+import avisos from "../../../Views/Menu/MenuData";
+import { useEffect, useState } from "react";
+import useFetch from "../../../useFetch/useFetch";
 import "./MenuBody.css";
-const MenuBody = () => {
-  const {
-    data: products,
-    loading: loadingProducts,
-    error: errorProducts,
-  } = useFetch("http://localhost:3001/products");
-  const {
-    data: categories,
-    loading: loadingCategories,
-    error: errorCategories,
-  } = useFetch("http://localhost:3001/categories");
+import NoProducts from "../../../assets/i_need_coffee.png";
+import LoadingProducts from "../../../assets/pagina.PNG";
+import Search from "../../shared/search/Search";
 
-  const chunkArray = (array, size) => {
-    if (!array) return [];
-    const chunkedArr = [];
-    let index = 0;
-    while (index < array.length) {
-      chunkedArr.push(array.slice(index, index + size));
-      index += size;
-    }
-    console.log(chunkedArr);
-    return chunkedArr;
+const MenuBody = () => {
+  const [products, setProducts] = useState([]);
+  const [errorProducts, setErrorProducts] = useState("");
+  const [categories, setCategories] = useState([]);
+  const [errorCategories, setErrorCategories] = useState("");
+
+  const { get, isLoading } = useFetch();
+
+  useEffect(() => {
+    get(
+      "/products",
+      false,
+      (data) => setProducts(data),
+      (error) => setErrorProducts(error)
+    );
+    get(
+      "/categories",
+      false,
+      (data) => setCategories(data),
+      (error) => setErrorCategories(error)
+    );
+  }, []);
+
+  const [valueFilter, setValueFilter] = useState("");
+  const [searchValue, setSearchValue] = useState("");
+
+  const handleChangeFilter = (value) => {
+    setValueFilter(value);
+    setSearchValue("");
   };
 
-  const categoryChunks = chunkArray(categories, 3);
+  const handleSearch = (event) => {
+    setSearchValue(event.target.value);
+    setValueFilter("");
+  };
+
+  const arrayProducts = () => {
+    let filteredItems = products.filter((item) => item.disponible) || [];
+
+    if (valueFilter !== "") {
+      filteredItems = filteredItems.filter(
+        (item) => item.categoriaId === parseInt(valueFilter)
+      );
+    }
+
+    if (searchValue) {
+      filteredItems = filteredItems.filter((item) =>
+        item.nombre.toLowerCase().includes(searchValue.toLowerCase())
+      );
+    }
+
+    return filteredItems;
+  };
+
+  const itemsToRender = arrayProducts();
 
   return (
     <>
-      <Row className="p-2 ">
-        <Post avisos={avisos} />
+      <Row className="fondDiv">
+        <Col className="filterDiv d-flex justify-content-center align-items-center py-5">
+          <Post avisos={avisos} />
+        </Col>
       </Row>
-      <Row>
-        <Row className="shadow mt-3">
-          <Col>
-            <h1>Categorías</h1>
-          </Col>
-        </Row>
-        <Row className="shadow mb-3">
-          {loadingCategories && "Cargando las categorias"}
-          {errorCategories && "Error al cargar las categorias"}
+      <div className="products-header mb-4">
+        <h2 className="products-title">Nuestros Productos</h2>
+        <p className="products-subtitle text-muted">
+          Descubrí nuestra selección de cafés y productos especiales
+        </p>
+      </div>
+      <Search
+        entity="productos"
+        value={searchValue}
+        onChange={handleSearch}
+        valueFilter={valueFilter}
+        onChangeFilter={handleChangeFilter}
+        categories={categories}
+        isLoading={isLoading}
+        errorCategories={errorCategories}
+      />
 
-          {/* Carrusel de Categorías */}
-          <Carousel
-            indicators={false}
-            controls={true}
-            interval={null}
-            className=""
-          >
-            {categoryChunks.map((chunk, index) => (
-              <Carousel.Item key={index} className="bg-white">
-                <div className="d-flex justify-content-center">
-                  {chunk.map((category) => (
-                    <BotonCategory key={category.id} title={category.nombre} />
-                  ))}
-                </div>
-              </Carousel.Item>
-            ))}
-          </Carousel>
-        </Row>
-      </Row>
       <Row className="d-flex justify-content-center align-items-center flex-wrap SeccionProd">
-        {loadingProducts && "Cargando los producctos"}
-        {errorProducts && "Error al cargar los producctos"}
-        {products?.map((item) => (
-          <Products
-            key={item.id}
-            title={item.nombre}
-            subTitle={item.descripcion}
-            imageUrl={item.imagen}
-            price={item.precio}
-            itemCart={item}
-          />
-        ))}
+        {isLoading && <h2>Cargando los productos ...</h2>}
+        {errorProducts && (
+          <Col className="text-center">
+            <Image className="w-25 h-25" src={LoadingProducts} rounded />
+            <h2>Error al cargar los productos ...</h2>
+          </Col>
+        )}
+        {!isLoading && !errorProducts && itemsToRender.length > 0
+          ? itemsToRender.map((item) => (
+              <Products
+                key={item.id}
+                title={item.nombre}
+                subTitle={item.descripcion}
+                imageUrl={item.imagen}
+                price={item.precio}
+                itemCart={item}
+              />
+            ))
+          : !isLoading &&
+            !errorProducts &&
+            itemsToRender.length == 0 && (
+              <Col className="text-center">
+                <Image className="w-25 h-25" src={NoProducts} rounded />
+                <h2>No hay productos cargados...</h2>
+              </Col>
+            )}
       </Row>
     </>
   );

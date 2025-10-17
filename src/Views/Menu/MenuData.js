@@ -1,27 +1,14 @@
-import { useState, useEffect } from "react";
-
-export function useFetch(url) {
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  useEffect(() => {
-    setLoading(true);
-    fetch(url)
-      .then((response) => response.json())
-      .then((data) => setData(data))
-      .catch((error) => setError(error))
-      .finally(() => setLoading(false));
-  }, []);
-
-  return { data, loading, error };
-}
+import {
+  errorToast,
+  successToast,
+} from "../../Components/shared/notifications/notification";
 
 // Avisos harcodeados
 const avisos = [
   {
     link: "/post/1",
     imageUrl:
-      "https://img.freepik.com/foto-gratis/inoxidable-doble-barra-oro-marron_1172-321.jpg",
+      "https://http2.mlstatic.com/D_NQ_699449-MLA94657083854_102025-OO.webp",
     altText: "Post 1",
     title: "Post 1",
     subTitle: "Subtitle 1",
@@ -29,14 +16,14 @@ const avisos = [
   {
     link: "/post/2",
     imageUrl:
-      "https://img.freepik.com/foto-gratis/taza-cafe-corazon-dibujado-espuma_1286-70.jpg",
+      "https://www.runutsco.com/wp-content/uploads/2024/09/Banner-Photoshopped-1536x400.webp",
     altText: "Post 2",
     title: "Post 2",
     subTitle: "Subtitle 2",
   },
   {
     link: "/post/3",
-    imageUrl: "https://cdn.wallpapersafari.com/81/65/8pLkTP.jpg",
+    imageUrl: "https://miro.medium.com/v2/1*Kb_BWNZeC7eiUH9UMYILnA.jpeg",
     altText: "Post 3",
     title: "Post 3",
     subTitle: "Subtitle 3",
@@ -52,23 +39,39 @@ export const GetLocalStorage = () => {
 
 export const postLocalStorage = (item) => {
   const carritoActual = GetLocalStorage();
-
-  const itemExiste = carritoActual.some((product) => product.id === item.id);
+  const itemExiste = carritoActual.find((product) => product.id === item.id);
 
   if (!itemExiste) {
-    item["cant"] = 1;
-    const carritoActualizado = [...carritoActual, item];
-
+    // Producto NO existe
+    const nuevoItem = { ...item, cantidad: 1 };
+    const carritoActualizado = [...carritoActual, nuevoItem];
     localStorage.setItem("carrito", JSON.stringify(carritoActualizado));
-    console.log("Producto añadido al carrito:", item);
+    console.log("Producto añadido al carrito:", nuevoItem);
+    successToast(`${item.nombre} añadido al carrito`);
   } else {
-    const prodSearch = carritoActual.find(
-      (producto) => producto.id === item.id
+    // Producto existe
+    const carritoActualizado = carritoActual.map((product) =>
+      product.id === item.id
+        ? { ...product, cantidad: (product.cantidad || 0) + 1 }
+        : product
     );
+    localStorage.setItem("carrito", JSON.stringify(carritoActualizado));
+    console.log("Cantidad actualizada en el carrito:", item);
+    successToast(`${item.nombre} añadido al carrito`);
+  }
+};
 
-    if (prodSearch) {
-      prodSearch.cant += 1;
-    }
-    console.log("El producto ya está en el carrito: " + item, item);
+export const deleteItemStorage = (item) => {
+  const carritoActual = GetLocalStorage();
+  const itemExiste = carritoActual.some((product) => product.id === item.id);
+  if (itemExiste) {
+    const carritoActualizado = carritoActual.filter(
+      (product) => product.id !== item.id
+    );
+    localStorage.setItem("carrito", JSON.stringify(carritoActualizado));
+    console.log("Producto eliminado del carrito:", item);
+    errorToast(`${item.nombre} ah sido eliminado del carrito.`);
+  } else {
+    console.log("El producto no está en el carrito:", item);
   }
 };

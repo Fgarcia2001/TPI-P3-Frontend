@@ -1,44 +1,76 @@
-/* Estilos generales del contenedor Nav */
-.navSize {
-  background-color: #2c3e50; /* Un azul oscuro y elegante */
-  color: white; /* Texto en blanco para contraste */
-  padding: 15px; /* Espaciado interno para que no se vea pegado */
-  border-radius: 8px; /* Bordes redondeados para un look suave */
-  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1); /* Sombra sutil para darle profundidad */
+.navbar-container {
+  background: #ffffff;
+  border-right: 1px solid #e5e7eb;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
-  min-height: 100vh;
 }
 
-/* Estilos de los links de navegación */
-.nav-link {
-  color: #bdc3c7; /* Un gris claro para los links inactivos */
-  transition: all 0.3s ease; /* Transición suave para los efectos */
-  font-size: 16px;
-  padding: 12px 15px;
-  border-radius: 6px;
-  font-weight: 500;
+.navbar-header {
+  padding: 2rem 1.5rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.store-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0;
+}
+
+.navbar-menu {
+  flex: 1;
+  padding: 1rem 0;
+}
+
+.nav-item {
   display: flex;
   align-items: center;
-  gap: 10px; /* Espacio entre el ícono y el texto, si agregas uno */
+  gap: 0.75rem;
+  padding: 0.875rem 1.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #6b7280;
+  font-size: 0.95rem;
+  border-left: 3px solid transparent;
+  user-select: none;
+  outline: none;
 }
 
-/* Estilos para el link activo */
-.nav-link.active,
-.nav-link:hover {
-  background-color: #34495e; /* Un tono más oscuro en hover/active */
-  color: #ecf0f1; /* Color de texto más claro */
+.nav-item:active {
+  transform: none;
+  outline: none;
 }
 
-/* Estilo para el título de "Mi tienda" */
-.nav-link.shadow.fw-bold.fs-5 {
-  color: #ecf0f1 !important; /* Aseguramos que el color sea blanco */
-  font-size: 1.5rem !important;
-  text-transform: uppercase; /* Para un título más impactante */
-  margin-bottom: 20px; /* Espacio debajo del título */
-  pointer-events: none; /* Evita que sea clickable */
+.nav-item:hover {
+  background: #f9fafb;
+  color: #1f2937;
 }
 
-/* Estilo para los links deshabilitados */
-.nav-link.disabled {
-  opacity: 0.7; /* Opacidad para indicar que están deshabilitados */
+.nav-item.active {
+  background: #f3f4f6;
+  color: #1f2937;
+  border-left-color: #3b82f6;
+}
+
+.nav-item i {
+  font-size: 1.25rem;
+}
+
+.navbar-footer {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: #6b7280;
+  font-size: 0.95rem;
+}
+
+.user-info i {
+  font-size: 1.5rem;
 }

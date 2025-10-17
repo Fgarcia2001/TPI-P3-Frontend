@@ -1,3 +1,14 @@
+.header-menu {
+}
+
+.button-Profile {
+  background-color: #b19583;
+}
+
+.button-Profile:hover {
+  background-color: #e6905b;
+}
+
 .icon {
   width: 3rem;
 }
