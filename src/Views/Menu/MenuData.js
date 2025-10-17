@@ -3,34 +3,6 @@ import {
   successToast,
 } from "../../Components/shared/notifications/notification";
 
-// Avisos harcodeados
-const avisos = [
-  {
-    link: "/post/1",
-    imageUrl:
-      "https://http2.mlstatic.com/D_NQ_699449-MLA94657083854_102025-OO.webp",
-    altText: "Post 1",
-    title: "Post 1",
-    subTitle: "Subtitle 1",
-  },
-  {
-    link: "/post/2",
-    imageUrl:
-      "https://www.runutsco.com/wp-content/uploads/2024/09/Banner-Photoshopped-1536x400.webp",
-    altText: "Post 2",
-    title: "Post 2",
-    subTitle: "Subtitle 2",
-  },
-  {
-    link: "/post/3",
-    imageUrl: "https://miro.medium.com/v2/1*Kb_BWNZeC7eiUH9UMYILnA.jpeg",
-    altText: "Post 3",
-    title: "Post 3",
-    subTitle: "Subtitle 3",
-  },
-];
-export default avisos;
-
 export const GetLocalStorage = () => {
   const dataLocalStorage = localStorage.getItem("carrito");
   const objeto = dataLocalStorage ? JSON.parse(dataLocalStorage) : [];

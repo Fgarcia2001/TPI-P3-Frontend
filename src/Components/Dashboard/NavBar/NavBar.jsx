@@ -4,6 +4,7 @@ import "./NavBar.css";
 import { Button } from "react-bootstrap";
 import { successToast } from "../../shared/notifications/notification";
 import { useNavigate } from "react-router";
+import { CartContext } from "../../../Services/Cart/CartContext";
 
 const NavBar = ({ handleViewOption }) => {
   const sections = [
@@ -15,6 +16,8 @@ const NavBar = ({ handleViewOption }) => {
   ];
 
   const { user, onLogout } = useContext(AuthUserContext);
+  const { clearCart } = useContext(CartContext);
+
   const [activeSection, setActiveSection] = useState("Inicio");
   const navigate = useNavigate();
 
@@ -25,6 +28,7 @@ const NavBar = ({ handleViewOption }) => {
 
   const handleLogout = () => {
     onLogout();
+    clearCart();
     successToast("Sesión cerrada con éxito");
     navigate("/auth");
   };

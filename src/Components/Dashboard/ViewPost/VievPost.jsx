@@ -1,13 +1,31 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Col, Row, Container, Form, Button, Card } from "react-bootstrap";
-import Post from "../../Menu/Post/Post";
-import avisos from "../../../Views/Menu/MenuData";
 import DeleteModal from "../../shared/deleteModal/DeleteModal";
-import { image, img } from "motion/react-client";
+import {
+  successToast,
+  errorToast,
+} from "../../shared/notifications/notification";
+import useFetch from "../../../useFetch/useFetch";
 
 const ViewPost = () => {
   const [urlInput, setUrlInput] = useState("");
-  const [previewAvisos, setPreviewAvisos] = useState(avisos);
+  const [previewAvisos, setPreviewAvisos] = useState([]);
+  const { get, post, del } = useFetch();
+
+  useEffect(() => {
+    get(
+      "/offers",
+      true,
+      (data) => {
+        setPreviewAvisos(data);
+        console.log("Ofertas cargadas:", data);
+      },
+      (err) => {
+        console.error("Error al cargar ofertas:", err);
+        errorToast(err.message || "Error al cargar ofertas");
+      }
+    );
+  }, []);
 
   const handleAddImage = (e) => {
     e.preventDefault();
@@ -17,26 +35,39 @@ const ViewPost = () => {
     }
 
     const newAviso = {
-      link: "/post/new",
-      imageUrl: urlInput,
-      altText: "Nuevo aviso",
-      title: "Nuevo Post",
-      subTitle: "Descripción del post",
+      imagen: urlInput, // ✅ Cambio aquí: "imagen" en vez de "imageUrl"
     };
 
-    setPreviewAvisos([...previewAvisos, newAviso]);
-    setUrlInput("");
-  };
-
-  const handleRemoveLast = () => {
-    if (previewAvisos.length > 0) {
-      setPreviewAvisos(previewAvisos.slice(0, -1));
-    }
+    post(
+      "/offers",
+      true,
+      newAviso,
+      (data) => {
+        setPreviewAvisos([...previewAvisos, data]);
+        successToast("Aviso agregado con éxito");
+        setUrlInput("");
+        console.log("Aviso creado:", data);
+      },
+      (err) => {
+        console.error("Error al agregar aviso:", err);
+        errorToast(err.message || "Error al agregar el aviso");
+      }
+    );
   };
 
   const handleDeleteAviso = (aviso) => {
-    setPreviewAvisos(
-      previewAvisos.filter((a) => a.imageUrl !== aviso.imageUrl)
+    del(
+      `/offers/${aviso.id}`,
+      true,
+      (data) => {
+        successToast("Aviso eliminado con éxito");
+        setPreviewAvisos(previewAvisos.filter((a) => a.id !== aviso.id));
+        console.log("Aviso eliminado:", data);
+      },
+      (err) => {
+        console.error("Error al eliminar:", err);
+        errorToast(err.message || "Error al eliminar el aviso");
+      }
     );
   };
 
@@ -47,7 +78,7 @@ const ViewPost = () => {
         <Col lg={4}>
           <Card className="border shadow-sm">
             <Card.Header className="bg-secondary text-white">
-              <h4 className="mb-0 ">Agregar Aviso</h4>
+              <h4 className="mb-0">Agregar Aviso</h4>
             </Card.Header>
             <Card.Body>
               <Form onSubmit={handleAddImage}>
@@ -80,42 +111,48 @@ const ViewPost = () => {
                 <p className="small text-muted mb-1">
                   Total de avisos: <strong>{previewAvisos.length}</strong>
                 </p>
-                <p className="small text-muted mb-0">
-                  Los cambios son solo vista previa
-                </p>
               </div>
             </Card.Body>
           </Card>
         </Col>
 
         {/* Columna de Previsualización */}
-        <Col lg={8} className="">
-          <Card className="border shadow-sm d-flex justify-content-center">
+        <Col lg={8}>
+          <Card className="border shadow-sm">
             <Card.Header className="bg-light">
               <h4 className="mb-0">
                 <i className="bi bi-eye me-2"></i>
                 Previsualización
               </h4>
             </Card.Header>
-            <Card.Body className="p-4 d-flex justify-content-center">
+            <Card.Body className="p-4">
               {previewAvisos.length > 0 ? (
-                <div className="w-100 d-flex flex-wrap justify-content-center gap-4">
+                <div className="d-flex flex-wrap justify-content-start gap-3">
                   {previewAvisos.map((aviso, index) => (
                     <div
-                      key={index}
-                      className="text-center border rounded p-3 shadow-sm bg-light"
-                      style={{ width: "520px", maxHeight: "300px" }}
+                      key={aviso.id || index}
+                      className="border rounded p-3 shadow-sm bg-light"
+                      style={{ width: "300px" }}
                     >
-                      <img
-                        src={aviso.imageUrl}
-                        alt={aviso.title || "Aviso"}
-                        className="img-fluid rounded mb-3"
+                      <div
+                        className="position-relative mb-3"
                         style={{
-                          maxHeight: "250px",
-                          objectFit: "cover",
                           width: "100%",
+                          height: "200px",
+                          overflow: "hidden",
                         }}
-                      />
+                      >
+                        <img
+                          src={aviso.imagen}
+                          alt="Aviso"
+                          className="rounded"
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            objectFit: "cover",
+                          }}
+                        />
+                      </div>
 
                       <DeleteModal
                         onDelete={() => handleDeleteAviso(aviso)}

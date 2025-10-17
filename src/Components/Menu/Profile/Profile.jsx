@@ -2,11 +2,13 @@ import { useContext, useState } from "react";
 import { Button, Offcanvas } from "react-bootstrap";
 import OrdersUser from "./OrdersUser/OrdersUser";
 import { AuthUserContext } from "../../../Services/AuthUserContext/AuthUserContext";
-import { errorToast } from "../../shared/notifications/notification";
+import { successToast } from "../../shared/notifications/notification";
 import { useNavigate } from "react-router";
+import { CartContext } from "../../../Services/Cart/CartContext";
 
 const Profile = ({ show, onHide }) => {
   const { rol, user, onLogout } = useContext(AuthUserContext);
+  const { clearCart } = useContext(CartContext);
   const navigate = useNavigate();
 
   const [showOrders, setShowOrders] = useState(false);
@@ -21,7 +23,8 @@ const Profile = ({ show, onHide }) => {
 
   const handleLogout = () => {
     onLogout();
-    errorToast("Sesión cerrada con éxito.");
+    clearCart();
+    successToast("Sesión cerrada con éxito.");
     onHide();
   };
 
