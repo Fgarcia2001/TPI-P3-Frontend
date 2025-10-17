@@ -11,6 +11,7 @@ const NavBar = ({ handleViewOption }) => {
     { name: "Productos", icon: "bi-box-seam" },
     { name: "Ordenes", icon: "bi-receipt" },
     { name: "Usuarios", icon: "bi-people" },
+    { name: "Avisos", icon: "bi bi-card-image" },
   ];
 
   const { user, onLogout } = useContext(AuthUserContext);

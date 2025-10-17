@@ -96,9 +96,9 @@ const Products = ({ title, subTitle, imageUrl, price, itemCart }) => {
                 onClick={() => handleAddFavorites(itemCart)}
               >
                 {isFavorite ? (
-                  <i className="bi bi-bookmark-heart-fill fs-4"></i>
+                  <i className="bi bi-bookmark-heart-fill fs-2 text-coffe"></i>
                 ) : (
-                  <i className="bi bi-bookmark-heart fs-4"></i>
+                  <i className="bi bi-bookmark-heart fs-2"></i>
                 )}
               </Button>
             </div>

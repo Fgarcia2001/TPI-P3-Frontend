@@ -96,33 +96,51 @@ const FormLogin = () => {
     );
   };
 
+  const handleGuestAccess = () => {
+    const guestUser = {
+      token: "guest-token",
+      nombre: "Invitado",
+      rol: "guest",
+      id: null,
+    };
+
+    onLogin(guestUser.token, guestUser.nombre, guestUser.rol, guestUser.id);
+    navigate("/");
+    successToast("Accediste como invitado");
+  };
+
   return (
-    <Form className="w-25 w-md-100" onSubmit={handleSubmit}>
-      {/* Campos email y contraseña */}
-      <Form.Group className="mb-3">
+    <Form className="w-25 w-md-100 " onSubmit={handleSubmit}>
+      {/* Email */}
+      <Form.Group className="mb-1">
+        <Form.Label htmlFor="email">Correo electrónico</Form.Label>
         {errors.email && (
-          <p className="text-danger m-0">El correo es requerido.</p>
+          <p className="text-danger m-0 small">El correo es requerido.</p>
         )}
         <Form.Control
+          id="email"
           className="inputLogin fs-4"
           type="email"
           name="email"
-          placeholder="Correo"
+          placeholder="ejemplo@correo.com"
           value={formData.email}
           onChange={handleInputChange}
           isInvalid={errors.email}
         />
       </Form.Group>
 
+      {/* Contraseña */}
       <Form.Group className="mb-3">
+        <Form.Label htmlFor="contrasena">Contraseña</Form.Label>
         {errors.contrasena && (
-          <p className="text-danger m-0">La contraseña es requerida.</p>
+          <p className="text-danger m-0 small">La contraseña es requerida.</p>
         )}
         <Form.Control
+          id="contrasena"
           className="inputLogin fs-4"
           type="password"
           name="contrasena"
-          placeholder="Contraseña"
+          placeholder="••••••••"
           value={formData.contrasena}
           onChange={handleInputChange}
           isInvalid={errors.contrasena}
@@ -132,45 +150,54 @@ const FormLogin = () => {
       {/* Campos adicionales si es registro */}
       {isRegisterMode && (
         <>
+          {/* Nombre */}
           <Form.Group className="mb-3">
+            <Form.Label htmlFor="nombre">Nombre</Form.Label>
             {errors.nombre && (
-              <p className="text-danger m-0">El nombre es requerido.</p>
+              <p className="text-danger m-0 small">El nombre es requerido.</p>
             )}
             <Form.Control
+              id="nombre"
               className="inputLogin fs-4"
               type="text"
               name="nombre"
-              placeholder="Nombre"
+              placeholder="Tu nombre"
               value={formData.nombre}
               onChange={handleInputChange}
               isInvalid={errors.nombre}
             />
           </Form.Group>
 
+          {/* Apellido */}
           <Form.Group className="mb-3">
+            <Form.Label htmlFor="apellido">Apellido</Form.Label>
             {errors.apellido && (
-              <p className="text-danger m-0">El apellido es requerido.</p>
+              <p className="text-danger m-0 small">El apellido es requerido.</p>
             )}
             <Form.Control
+              id="apellido"
               className="inputLogin fs-4"
               type="text"
               name="apellido"
-              placeholder="Apellido"
+              placeholder="Tu apellido"
               value={formData.apellido}
               onChange={handleInputChange}
               isInvalid={errors.apellido}
             />
           </Form.Group>
 
+          {/* Teléfono */}
           <Form.Group className="mb-3">
+            <Form.Label htmlFor="telefono">Teléfono</Form.Label>
             {errors.telefono && (
-              <p className="text-danger m-0">El teléfono es requerido.</p>
+              <p className="text-danger m-0 small">El teléfono es requerido.</p>
             )}
             <Form.Control
+              id="telefono"
               className="inputLogin fs-4"
               type="tel"
               name="telefono"
-              placeholder="Teléfono"
+              placeholder="Ej: 3415551234"
               value={formData.telefono}
               onChange={handleInputChange}
               isInvalid={errors.telefono}
@@ -181,27 +208,39 @@ const FormLogin = () => {
 
       <div className="d-flex flex-column justify-content-center align-items-center">
         <Button
-          className="btnSubmit mb-3"
+          className="btnSubmit mb-3 w-100"
           type="submit"
-          onClick={() => toggleMode}
+          disabled={isLoading}
         >
-          {isRegisterMode ? "Registrarse" : "Iniciar sesión"}
+          {isLoading
+            ? "Cargando..."
+            : isRegisterMode
+            ? "Registrarse"
+            : "Iniciar sesión"}
         </Button>
 
         {!isRegisterMode && (
-          <Button className="btnSubmit bg-secondary" type="button">
+          <Button
+            className="btnSubmit bg-secondary w-100 mb-3"
+            type="button"
+            onClick={handleGuestAccess}
+          >
             Seguir como invitado
           </Button>
         )}
 
-        <p className="">
+        <p className="text-center">
           <span>
             {isRegisterMode
               ? "¿Ya tienes una cuenta?"
               : "¿Aún no tienes una cuenta?"}
           </span>
-          <span className="text-warning login" onClick={toggleMode}>
-            {isRegisterMode ? " Regresar" : " Registrarse gratis"}
+          <span
+            className="text-warning login ms-1"
+            onClick={toggleMode}
+            style={{ cursor: "pointer" }}
+          >
+            {isRegisterMode ? "Iniciar sesión" : "Registrarse gratis"}
           </span>
         </p>
       </div>

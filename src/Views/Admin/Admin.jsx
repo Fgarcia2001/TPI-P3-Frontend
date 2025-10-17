@@ -4,6 +4,7 @@ import "./Admin.css";
 import AbmProducts from "../../Components/Dashboard/AbmProducts/AbmProducts";
 import ViewUser from "../../Components/Dashboard/ViewUsers/ViewUser";
 import ViewOrders from "../../Components/Dashboard/ViewOrders/ViewOrders";
+import VievPost from "../../Components/Dashboard/ViewPost/VievPost";
 import { useState } from "react";
 import { useNavigate } from "react-router";
 
@@ -41,7 +42,7 @@ const Admin = () => {
           {viewOption === "Productos" && <AbmProducts />}
           {viewOption === "Usuarios" && <ViewUser />}
           {viewOption === "Ordenes" && <ViewOrders />}
-          
+          {viewOption === "Avisos" && <VievPost />}
         </Col>
       </Row>
     </>

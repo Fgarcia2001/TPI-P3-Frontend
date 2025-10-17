@@ -103,7 +103,7 @@ const ProductRow = ({
             <Button onClick={onEdit} variant="warning" className="mb-1 me-sm-1">
               Editar
             </Button>
-            <DeleteModal onDelete={onDelete} item={item} />
+            <DeleteModal onDelete={onDelete} item={item} elemento={"item"} />
           </div>
         )}
       </td>
