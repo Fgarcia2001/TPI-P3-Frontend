@@ -8,6 +8,7 @@ import {
   successToast,
   errorToast,
 } from "../../shared/notifications/notification";
+import { AuthUserContext } from "../../../Services/AuthUserContext/AuthUserContext";
 
 const FooterMenu = ({ HandleFavoritesView }) => {
   const [botons, setBotons] = useState({
@@ -18,6 +19,7 @@ const FooterMenu = ({ HandleFavoritesView }) => {
 
   const [showCartModal, setShowCartModal] = useState(false);
 
+  const { isLogged } = useContext(AuthUserContext);
   const { cart, clearCart } = useContext(CartContext);
   const { post } = useFetch();
 
@@ -92,7 +94,13 @@ const FooterMenu = ({ HandleFavoritesView }) => {
                 ? "bi bi-heart-fill iconFooter active"
                 : "bi bi-heart iconFooter"
             }
-            onClick={() => handleIconClick("heart")}
+            onClick={() => {
+              if (!isLogged) {
+                errorToast("Para ver esta seccion debe iniciar sesion");
+                return;
+              }
+              handleIconClick("heart");
+            }}
           ></i>
         </Col>
 

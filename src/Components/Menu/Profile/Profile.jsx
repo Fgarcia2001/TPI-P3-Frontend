@@ -7,7 +7,7 @@ import { useNavigate } from "react-router";
 import { CartContext } from "../../../Services/Cart/CartContext";
 
 const Profile = ({ show, onHide }) => {
-  const { rol, user, onLogout } = useContext(AuthUserContext);
+  const { isLogged, rol, user, onLogout } = useContext(AuthUserContext);
   const { clearCart } = useContext(CartContext);
   const navigate = useNavigate();
 
@@ -30,45 +30,75 @@ const Profile = ({ show, onHide }) => {
 
   return (
     <Offcanvas show={show} onHide={onHide} placement="start">
-      <Offcanvas.Header closeButton>
-        <Offcanvas.Title>{user}</Offcanvas.Title>
-      </Offcanvas.Header>
+      {isLogged ? (
+        <>
+          <Offcanvas.Header closeButton>
+            <Offcanvas.Title>{user}</Offcanvas.Title>
+          </Offcanvas.Header>
 
-      <Offcanvas.Body className="d-flex flex-column w-100 justify-content-center text-center">
-        {showOrders ? (
-          <OrdersUser onBack={handleBack} />
-        ) : (
-          <>
-            <div className="align-items-center mb-4">
-              <h1>¡Bienvenido a Yummy Coffee!</h1>
+          <Offcanvas.Body className="d-flex flex-column w-100 justify-content-center text-center">
+            {showOrders ? (
+              <OrdersUser onBack={handleBack} />
+            ) : (
+              <>
+                <div className="align-items-center mb-4">
+                  <h1>¡Bienvenido a Yummy Coffee!</h1>
+                </div>
+
+                <Button
+                  className="rounded-pill px-4 m-4 button-Profile"
+                  onClick={handleShowOrders}
+                >
+                  Ver Mis Órdenes
+                </Button>
+
+                {(rol === "admin" || rol === "sysadmin") && (
+                  <Button
+                    onClick={() => navigate("/admin")}
+                    className="rounded-pill px-4 m-4 button-Profile"
+                  >
+                    Panel de administrador
+                  </Button>
+                )}
+
+                <Button
+                  className="rounded-pill px-4 m-4"
+                  variant="danger"
+                  onClick={handleLogout}
+                >
+                  Cerrar sesión
+                </Button>
+              </>
+            )}
+          </Offcanvas.Body>
+        </>
+      ) : (
+        <>
+          <Offcanvas.Header closeButton>
+            <Offcanvas.Title>Perfil</Offcanvas.Title>
+          </Offcanvas.Header>
+
+          <Offcanvas.Body className="d-flex flex-column justify-content-center align-items-center text-center">
+            <div className="mb-4">
+              <i className="bi bi-person-x fs-1 text-muted mb-3 d-block"></i>
+              <h3 className="mb-3">Acceso restringido</h3>
+              <p className="text-muted">
+                Para ver esta sección debés estar logueado
+              </p>
             </div>
 
             <Button
-              className="rounded-pill px-4 m-4 button-Profile"
-              onClick={handleShowOrders}
+              className="rounded-pill px-4 button-Profile"
+              onClick={() => {
+                onHide();
+                navigate("/auth");
+              }}
             >
-              Ver Mis Órdenes
+              Iniciar sesión
             </Button>
-
-            {(rol === "admin" || rol === "sysadmin") && (
-              <Button
-                onClick={() => navigate("/admin")}
-                className="rounded-pill px-4 m-4 button-Profile"
-              >
-                Panel de administrador
-              </Button>
-            )}
-
-            <Button
-              className="rounded-pill px-4 m-4"
-              variant="danger"
-              onClick={handleLogout}
-            >
-              Cerrar sesión
-            </Button>
-          </>
-        )}
-      </Offcanvas.Body>
+          </Offcanvas.Body>
+        </>
+      )}
     </Offcanvas>
   );
 };
