@@ -1,19 +1,20 @@
 import { Row, Col, Image } from "react-bootstrap";
 import Products from "../Products/Products";
 import Post from "../Post/Post";
-import avisos from "../../../Views/Menu/MenuData";
 import { useEffect, useState } from "react";
 import useFetch from "../../../useFetch/useFetch";
 import "./MenuBody.css";
 import NoProducts from "../../../assets/i_need_coffee.png";
 import LoadingProducts from "../../../assets/pagina.PNG";
 import Search from "../../shared/search/Search";
+import { errorToast } from "../../shared/notifications/notification";
 
 const MenuBody = () => {
   const [products, setProducts] = useState([]);
   const [errorProducts, setErrorProducts] = useState("");
   const [categories, setCategories] = useState([]);
   const [errorCategories, setErrorCategories] = useState("");
+  const [avisos, setAvisos] = useState([]);
 
   const { get, isLoading } = useFetch();
 
@@ -29,6 +30,18 @@ const MenuBody = () => {
       false,
       (data) => setCategories(data),
       (error) => setErrorCategories(error)
+    );
+    get(
+      "/offers",
+      true,
+      (data) => {
+        setAvisos(data);
+        console.log("Ofertas cargadas:", data);
+      },
+      (err) => {
+        console.error("Error al cargar ofertas:", err);
+        errorToast(err.message || "Error al cargar ofertas");
+      }
     );
   }, []);
 
@@ -69,7 +82,13 @@ const MenuBody = () => {
     <>
       <Row className="fondDiv">
         <Col className="filterDiv d-flex justify-content-center align-items-center py-5">
-          <Post avisos={avisos} />
+          {avisos.length > 0 ? (
+            <Post avisos={avisos} />
+          ) : (
+            <div className="text-center text-muted py-5">
+              <p>No hay ofertas disponibles</p>
+            </div>
+          )}
         </Col>
       </Row>
       <div className="products-header mb-4">
@@ -110,7 +129,7 @@ const MenuBody = () => {
             ))
           : !isLoading &&
             !errorProducts &&
-            itemsToRender.length == 0 && (
+            itemsToRender.length === 0 && (
               <Col className="text-center">
                 <Image className="w-25 h-25" src={NoProducts} rounded />
                 <h2>No hay productos cargados...</h2>

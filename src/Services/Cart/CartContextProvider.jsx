@@ -20,7 +20,7 @@ const CartContextProvider = ({ children }) => {
   };
 
   const clearCart = () => {
-    localStorage.removeItem("Carrito");
+    localStorage.removeItem("carrito");
     setCart([]);
   };
 

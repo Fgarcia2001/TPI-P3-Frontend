@@ -7,6 +7,7 @@ const rolValue = localStorage.getItem("RolContext");
 const idValue = localStorage.getItem("IdUserContext");
 
 const AuthUserContextProvider = ({ children }) => {
+  const [isLogged, setIsLogged] = useState(false);
   const [token, setToken] = useState(tokenValue);
   const [user, setUser] = useState(nameValue);
   const [rol, setRol] = useState(rolValue);
@@ -24,6 +25,8 @@ const AuthUserContextProvider = ({ children }) => {
 
     setIdUser(idUser);
     localStorage.setItem("IdUserContext", idUser);
+
+    setIsLogged(true);
   };
 
   const handleLogout = () => {
@@ -36,11 +39,13 @@ const AuthUserContextProvider = ({ children }) => {
     localStorage.removeItem("NombreContext");
     localStorage.removeItem("RolContext");
     localStorage.removeItem("IdUserContext");
+    setIsLogged(false);
   };
 
   return (
     <AuthUserContext.Provider
       value={{
+        isLogged,
         user,
         token,
         rol,
