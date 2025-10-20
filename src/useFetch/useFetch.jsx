@@ -72,7 +72,7 @@ const useFetch = () => {
     get,
     post,
     put,
-    del, 
+    del,
     isLoading,
   };
 };

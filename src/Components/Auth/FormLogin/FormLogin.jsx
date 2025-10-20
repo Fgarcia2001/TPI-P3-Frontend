@@ -39,27 +39,38 @@ const FormLogin = () => {
     const newErrors = { ...initErrores };
 
     if (!formData.email) {
-      newErrors.email = true;
+      newErrors.email = "El correo es requerido.";
       isValid = false;
     }
 
     if (!formData.contrasena) {
-      newErrors.contrasena = true;
+      newErrors.contrasena = "La contraseña es requerida.";
+      isValid = false;
+    } else if (formData.contrasena.length < 4) {
+      newErrors.contrasena = "La contraseña debe tener al menos 4 caracteres.";
       isValid = false;
     }
 
     if (isRegisterMode) {
       if (!formData.nombre) {
-        newErrors.nombre = true;
+        newErrors.nombre = "El nombre es requerido.";
         isValid = false;
       }
       if (!formData.apellido) {
-        newErrors.apellido = true;
+        newErrors.apellido = "El apellido es requerido.";
         isValid = false;
       }
       if (!formData.telefono) {
-        newErrors.telefono = true;
+        newErrors.telefono = "El teléfono es requerido.";
         isValid = false;
+      } else {
+        // Regex para teléfono argentino: 10 dígitos, puede empezar con 15
+        const phoneRegex = /^(?:15)?[0-9]{8,10}$/;
+        if (!phoneRegex.test(formData.telefono)) {
+          newErrors.telefono =
+            "Teléfono inválido. Debe tener entre 8 y 10 dígitos.";
+          isValid = false;
+        }
       }
     }
 
@@ -105,23 +116,22 @@ const FormLogin = () => {
         const decoded = jwtDecode(data.token);
         onLogin(data.token, data.user.nombre, decoded.rol, decoded.id);
         navigate("/");
+        successToast("Accediste como invitado. Tu historial no se guardará.");
       },
       (err) => {
         console.error("Error en la respuesta:", err);
         errorToast(err.message);
       }
     );
-    navigate("/");
-    successToast("Accediste como invitado");
   };
 
   return (
-    <Form className="w-25 w-md-100 " onSubmit={handleSubmit}>
+    <Form className="w-25 w-md-100" onSubmit={handleSubmit}>
       {/* Email */}
       <Form.Group className="mb-1">
         <Form.Label htmlFor="email">Correo electrónico</Form.Label>
         {errors.email && (
-          <p className="text-danger m-0 small">El correo es requerido.</p>
+          <p className="text-danger m-0 small">{errors.email}</p>
         )}
         <Form.Control
           id="email"
@@ -131,7 +141,7 @@ const FormLogin = () => {
           placeholder="ejemplo@correo.com"
           value={formData.email}
           onChange={handleInputChange}
-          isInvalid={errors.email}
+          isInvalid={!!errors.email}
         />
       </Form.Group>
 
@@ -139,7 +149,7 @@ const FormLogin = () => {
       <Form.Group className="mb-3">
         <Form.Label htmlFor="contrasena">Contraseña</Form.Label>
         {errors.contrasena && (
-          <p className="text-danger m-0 small">La contraseña es requerida.</p>
+          <p className="text-danger m-0 small">{errors.contrasena}</p>
         )}
         <Form.Control
           id="contrasena"
@@ -149,7 +159,7 @@ const FormLogin = () => {
           placeholder="••••••••"
           value={formData.contrasena}
           onChange={handleInputChange}
-          isInvalid={errors.contrasena}
+          isInvalid={!!errors.contrasena}
         />
       </Form.Group>
 
@@ -160,7 +170,7 @@ const FormLogin = () => {
           <Form.Group className="mb-3">
             <Form.Label htmlFor="nombre">Nombre</Form.Label>
             {errors.nombre && (
-              <p className="text-danger m-0 small">El nombre es requerido.</p>
+              <p className="text-danger m-0 small">{errors.nombre}</p>
             )}
             <Form.Control
               id="nombre"
@@ -170,7 +180,7 @@ const FormLogin = () => {
               placeholder="Tu nombre"
               value={formData.nombre}
               onChange={handleInputChange}
-              isInvalid={errors.nombre}
+              isInvalid={!!errors.nombre}
             />
           </Form.Group>
 
@@ -178,7 +188,7 @@ const FormLogin = () => {
           <Form.Group className="mb-3">
             <Form.Label htmlFor="apellido">Apellido</Form.Label>
             {errors.apellido && (
-              <p className="text-danger m-0 small">El apellido es requerido.</p>
+              <p className="text-danger m-0 small">{errors.apellido}</p>
             )}
             <Form.Control
               id="apellido"
@@ -188,26 +198,30 @@ const FormLogin = () => {
               placeholder="Tu apellido"
               value={formData.apellido}
               onChange={handleInputChange}
-              isInvalid={errors.apellido}
+              isInvalid={!!errors.apellido}
             />
           </Form.Group>
 
           {/* Teléfono */}
           <Form.Group className="mb-3">
-            <Form.Label htmlFor="telefono">Teléfono</Form.Label>
+            <Form.Label htmlFor="telefono">Teléfono:*</Form.Label>
             {errors.telefono && (
-              <p className="text-danger m-0 small">El teléfono es requerido.</p>
+              <p className="text-danger m-0 small">{errors.telefono}</p>
             )}
             <Form.Control
               id="telefono"
               className="inputLogin fs-4"
               type="tel"
               name="telefono"
-              placeholder="Ej: 3415551234"
+              placeholder="3415551234"
               value={formData.telefono}
               onChange={handleInputChange}
-              isInvalid={errors.telefono}
+              isInvalid={!!errors.telefono}
+              maxLength={10}
             />
+            <Form.Text className="text-muted">
+              Ingresá solo números (8-10 dígitos)
+            </Form.Text>
           </Form.Group>
         </>
       )}
@@ -230,6 +244,7 @@ const FormLogin = () => {
             className="btnSubmit bg-secondary w-100 mb-3"
             type="button"
             onClick={handleGuestAccess}
+            disabled={isLoading}
           >
             Seguir como invitado
           </Button>

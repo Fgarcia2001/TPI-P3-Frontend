@@ -1,4 +1,4 @@
-import { Row, Col, Image } from "react-bootstrap";
+import { Row, Col, Image, Spinner } from "react-bootstrap";
 import Products from "../Products/Products";
 import Post from "../Post/Post";
 import { useEffect, useState } from "react";
@@ -82,9 +82,9 @@ const MenuBody = () => {
     <>
       <Row className="fondDiv">
         <Col className="filterDiv d-flex justify-content-center align-items-center py-5">
-          {avisos.length > 0 ? (
-            <Post avisos={avisos} />
-          ) : (
+          {isLoading && <Spinner />}
+          {!isLoading && avisos.length > 0 && <Post avisos={avisos} />}
+          {!isLoading && avisos.length === 0 && (
             <div className="text-center text-muted py-5">
               <p>No hay ofertas disponibles</p>
             </div>

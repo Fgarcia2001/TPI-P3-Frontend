@@ -1,6 +1,6 @@
 import FormLogin from "../../Components/Auth/FormLogin/FormLogin";
 import { Image } from "react-bootstrap";
-import logo from "../../assets/Yummy-Coffe-logo.png";
+import logo from "../../assets/Yummy-Coffe-Logo.png";
 import "./AuthPage.css";
 
 const AuthPage = () => {

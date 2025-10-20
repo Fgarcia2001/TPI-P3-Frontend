@@ -1,6 +1,6 @@
 import { Row, Col } from "react-bootstrap";
 import User from "../../../assets/HeaderMenu/User.png";
-import Tray from "../../../assets/HeaderMenu/Tray.png";
+import Tray from "../../../assets/HeaderMenu/tray.png";
 import "./HeaderMenu.css";
 import Profile from "../Profile/Profile";
 import { useState } from "react";

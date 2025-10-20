@@ -40,7 +40,10 @@ const Favorites = () => {
         <h1>Favoritos</h1>
       </Row>
       <Row className="d-flex justify-content-center align-items-center flex-wrap SeccionProd">
-        {products.length > 0 ? (
+        {loading && <Spinner />}
+
+        {!loading &&
+          products.length > 0 &&
           products.map((item) => (
             <Products
               key={item.id}
@@ -50,11 +53,12 @@ const Favorites = () => {
               price={item.precio}
               itemCart={item}
             />
-          ))
-        ) : (
+          ))}
+
+        {!loading && products.length === 0 && (
           <Col className="text-center">
             <Image src={Nofavorites} rounded />
-            <h2>No tenes favoritos</h2>
+            <h2>No tenés favoritos</h2>
           </Col>
         )}
       </Row>
