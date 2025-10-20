@@ -2,7 +2,7 @@ import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
-import { initFormData, initErrores } from "./FomLogin.data";
+import { initFormData, initErrores, singinInvited } from "./FomLogin.data";
 import { AuthUserContext } from "../../../Services/AuthUserContext/AuthUserContext";
 import { jwtDecode } from "jwt-decode";
 import "./FormLogin.css";
@@ -76,7 +76,7 @@ const FormLogin = () => {
 
     post(
       endpoint,
-      true,
+      false,
       formData,
       (data) => {
         if (!isRegisterMode && data.token) {
@@ -97,14 +97,20 @@ const FormLogin = () => {
   };
 
   const handleGuestAccess = () => {
-    const guestUser = {
-      token: "guest-token",
-      nombre: "Invitado",
-      rol: "guest",
-      id: null,
-    };
-
-    onLogin(guestUser.token, guestUser.nombre, guestUser.rol, guestUser.id);
+    post(
+      "/user/login",
+      false,
+      singinInvited,
+      (data) => {
+        const decoded = jwtDecode(data.token);
+        onLogin(data.token, data.user.nombre, decoded.rol, decoded.id);
+        navigate("/");
+      },
+      (err) => {
+        console.error("Error en la respuesta:", err);
+        errorToast(err.message);
+      }
+    );
     navigate("/");
     successToast("Accediste como invitado");
   };

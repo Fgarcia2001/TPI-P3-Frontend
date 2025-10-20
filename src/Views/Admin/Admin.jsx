@@ -25,20 +25,22 @@ const Admin = () => {
           <NavBar handleViewOption={handleViewOption} />
         </Col>
         <Col sm={10} className="fs-3 fw-bold m-0 p-0 vh-100 overflow-auto">
-          <Row className="sticky-top bg-transparent border-bottom py-2">
+          <Row className="sticky-top bg-white border-bottom py-2">
             <div className="d-flex align-items-center justify-content-center w-100 position-relative">
-              <div className="fs-3 fw-semibold">Panel de Administrador</div>
               <Button
                 variant="secondary"
                 onClick={() => navigate("/")}
-                className="position-absolute end-0 me-3"
+                className="position-absolute start-0 ms-4"
               >
                 Volver al menú
               </Button>
+              <div className="fs-3 fw-semibold">Panel de Administrador</div>
             </div>
           </Row>
 
-          {viewOption === "Inicio" && <h1>Bienvenido a tu tienda.</h1>}
+          {viewOption === "Inicio" && (
+            <h2 className="mt-5 fw-bold fs-1">Bienvenido a tu tienda.</h2>
+          )}
           {viewOption === "Productos" && <AbmProducts />}
           {viewOption === "Usuarios" && <ViewUser />}
           {viewOption === "Ordenes" && <ViewOrders />}

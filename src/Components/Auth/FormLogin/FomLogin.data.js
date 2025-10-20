@@ -14,3 +14,8 @@ export const initErrores = {
   apellido: false,
   telefono: false,
 };
+
+export const singinInvited = {
+  contrasena: "I3",
+  email: "Invitado@gmail.com",
+};

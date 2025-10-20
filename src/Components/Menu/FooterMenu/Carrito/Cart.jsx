@@ -4,19 +4,28 @@ import Modal from "react-bootstrap/Modal";
 import {
   GetLocalStorage,
   deleteItemStorage,
+  modifiedAmount,
 } from "../../../../Views/Menu/MenuData";
 import "./Cart.css";
 import { useContext, useEffect, useState } from "react";
 import { AuthUserContext } from "../../../../Services/AuthUserContext/AuthUserContext";
 import { CartContext } from "../../../../Services/Cart/CartContext";
 import ModalNotLogged from "./ModalNotLogged/ModalNotLogged";
+import useFetch from "../../../../useFetch/useFetch";
+import { singinInvited } from "../../../Auth/FormLogin/FomLogin.data";
+import { jwtDecode } from "jwt-decode";
+import {
+  errorToast,
+  successToast,
+} from "../../../shared/notifications/notification";
 
 const Cart = ({ show, handleClose, onHandleBuy }) => {
   const [prodCart, setProdCat] = useState([]);
   const [showNotLoggedModal, setShowNotLoggedModal] = useState(false);
 
   const { RemoveItemCart, clearCart } = useContext(CartContext);
-  const { token, isLogged } = useContext(AuthUserContext);
+  const { user, token, isLogged, onLogin } = useContext(AuthUserContext);
+  const { post, isLoading } = useFetch();
 
   useEffect(() => {
     const prodsInCart = GetLocalStorage();
@@ -30,8 +39,22 @@ const Cart = ({ show, handleClose, onHandleBuy }) => {
     RemoveItemCart(item);
   };
 
+  const onModifyAmount = (boolean, id) => {
+    const updatedCart = prodCart.map((item) => {
+      if (item.id === id) {
+        const updateCant = boolean
+          ? item.cantidad + 1
+          : Math.max(1, item.cantidad - 1);
+        return { ...item, cantidad: updateCant };
+      }
+      return item;
+    });
+    setProdCat(updatedCart);
+    modifiedAmount(updatedCart);
+  };
+
   const OnHandleSubmitBuy = () => {
-    if (!isLogged) {
+    if (!isLogged && user !== "Usuario") {
       setShowNotLoggedModal(true);
       return;
     }
@@ -44,12 +67,21 @@ const Cart = ({ show, handleClose, onHandleBuy }) => {
   };
 
   const handleContinueAsGuest = () => {
+    post(
+      "/user/login",
+      false,
+      singinInvited,
+      (data) => {
+        const decoded = jwtDecode(data.token);
+        onLogin(data.token, data.user.nombre, decoded.rol, decoded.id);
+      },
+      (err) => {
+        console.error("Error en la respuesta:", err);
+        errorToast(err.message);
+      }
+    );
+    successToast("Seguiras como invitado");
     setShowNotLoggedModal(false);
-    onHandleBuy(prodCart, token);
-    clearCart();
-    localStorage.removeItem("carrito");
-    setProdCat([]);
-    handleClose();
   };
 
   const totalPrice = prodCart?.reduce(
@@ -110,6 +142,21 @@ const Cart = ({ show, handleClose, onHandleBuy }) => {
                         </span>
                       </div>
                     </div>
+
+                    <Button
+                      variant="outline-secondary"
+                      className="rounded-1"
+                      onClick={() => onModifyAmount(false, item.id)}
+                    >
+                      <i className="bi bi-dash-lg"></i>
+                    </Button>
+                    <Button
+                      variant="outline-secondary"
+                      className="rounded-1"
+                      onClick={() => onModifyAmount(true, item.id)}
+                    >
+                      <i className="bi bi-plus-lg"></i>
+                    </Button>
 
                     <Button
                       variant="outline-danger"

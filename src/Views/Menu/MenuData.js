@@ -47,3 +47,11 @@ export const deleteItemStorage = (item) => {
     console.log("El producto no está en el carrito:", item);
   }
 };
+export const modifiedAmount = (updateCart) => {
+  if (!Array.isArray) {
+    console.log("Se espera un array en el carrito");
+    return;
+  }
+  localStorage.setItem("carrito", JSON.stringify(updateCart));
+  return;
+};

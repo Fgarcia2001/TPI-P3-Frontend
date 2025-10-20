@@ -16,7 +16,7 @@ const Products = ({ title, subTitle, imageUrl, price, itemCart }) => {
   const [isFlipped, setIsFlipped] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
 
-  const { token } = useContext(AuthUserContext);
+  const { token, isLogged } = useContext(AuthUserContext);
   const { AddCart } = useContext(CartContext);
   const { post, get, del } = useFetch();
 
@@ -36,6 +36,10 @@ const Products = ({ title, subTitle, imageUrl, price, itemCart }) => {
   }, []);
 
   const handleAddFavorites = (item) => {
+    if (!isLogged) {
+      errorToast("Para guardar productos en favoritos debe iniciar sesion");
+      return;
+    }
     if (isFavorite) {
       del(
         `/favorites/${item.id}`,

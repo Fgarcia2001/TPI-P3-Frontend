@@ -14,19 +14,26 @@ const AuthUserContextProvider = ({ children }) => {
   const [idUser, setIdUser] = useState(idValue);
 
   const handleLogin = (token, nombre, rol, idUser) => {
-    setToken(token);
-    localStorage.setItem("TokenJWT", token);
+    if (nombre !== "Usuario") {
+      setToken(token);
+      localStorage.setItem("TokenJWT", token);
 
-    setUser(nombre);
-    localStorage.setItem("NombreContext", nombre);
+      setUser(nombre);
+      localStorage.setItem("NombreContext", nombre);
 
-    setRol(rol);
-    localStorage.setItem("RolContext", rol);
+      setRol(rol);
+      localStorage.setItem("RolContext", rol);
 
-    setIdUser(idUser);
-    localStorage.setItem("IdUserContext", idUser);
+      setIdUser(idUser);
+      localStorage.setItem("IdUserContext", idUser);
 
-    setIsLogged(true);
+      setIsLogged(true);
+    } else {
+      setUser(nombre);
+      localStorage.setItem("NombreContext", nombre);
+      setToken(token);
+      localStorage.setItem("TokenJWT", token);
+    }
   };
 
   const handleLogout = () => {
