@@ -4,6 +4,7 @@ import Modal from "react-bootstrap/Modal";
 import {
   GetLocalStorage,
   deleteItemStorage,
+  modifiedAmount,
 } from "../../../../Views/Menu/MenuData";
 import "./Cart.css";
 import { useContext, useEffect, useState } from "react";
@@ -28,6 +29,19 @@ const Cart = ({ show, handleClose, onHandleBuy }) => {
     setProdCat(prodInCart);
     deleteItemStorage(item);
     RemoveItemCart(item);
+  };
+  const onModifyAmount = (boolean, id) => {
+    const updatedCart = prodCart.map((item) => {
+      if (item.id === id) {
+        const updateCant = boolean
+          ? item.cantidad + 1
+          : Math.max(1, item.cantidad - 1);
+        return { ...item, cantidad: updateCant };
+      }
+      return item;
+    });
+    setProdCat(updatedCart);
+    modifiedAmount(updatedCart);
   };
 
   const OnHandleSubmitBuy = () => {
@@ -110,7 +124,20 @@ const Cart = ({ show, handleClose, onHandleBuy }) => {
                         </span>
                       </div>
                     </div>
-
+                    <Button
+                      variant="outline-secondary"
+                      className="rounded-1"
+                      onClick={() => onModifyAmount(false, item.id)}
+                    >
+                      <i className="bi bi-dash-lg"></i>
+                    </Button>
+                    <Button
+                      variant="outline-secondary"
+                      className="rounded-1"
+                      onClick={() => onModifyAmount(true, item.id)}
+                    >
+                      <i className="bi bi-plus-lg"></i>
+                    </Button>
                     <Button
                       variant="outline-danger"
                       size="md"
