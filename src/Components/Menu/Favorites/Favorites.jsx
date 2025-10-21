@@ -1,5 +1,5 @@
 import { useEffect, useState, useContext } from "react";
-import { Col, Image, Row } from "react-bootstrap";
+import { Col, Image, Row, Spinner } from "react-bootstrap";
 import Products from "../Products/Products";
 import Nofavorites from "../../../assets/brown-broken-heart-icon.png";
 import { AuthUserContext } from "../../../Services/AuthUserContext/AuthUserContext";

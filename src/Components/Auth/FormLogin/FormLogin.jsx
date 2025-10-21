@@ -116,7 +116,7 @@ const FormLogin = () => {
         const decoded = jwtDecode(data.token);
         onLogin(data.token, data.user.nombre, decoded.rol, decoded.id);
         navigate("/");
-        successToast("Accediste como invitado. Tu historial no se guardará.");
+        successToast("Accediste como invitado.");
       },
       (err) => {
         console.error("Error en la respuesta:", err);
@@ -126,10 +126,10 @@ const FormLogin = () => {
   };
 
   return (
-    <Form className="w-25 w-md-100" onSubmit={handleSubmit}>
+    <Form className="w-lg-25 w-sm-50 w-md-100" onSubmit={handleSubmit}>
       {/* Email */}
       <Form.Group className="mb-1">
-        <Form.Label htmlFor="email">Correo electrónico</Form.Label>
+        <Form.Label htmlFor="email">Correo electrónico:*</Form.Label>
         {errors.email && (
           <p className="text-danger m-0 small">{errors.email}</p>
         )}
@@ -147,7 +147,7 @@ const FormLogin = () => {
 
       {/* Contraseña */}
       <Form.Group className="mb-3">
-        <Form.Label htmlFor="contrasena">Contraseña</Form.Label>
+        <Form.Label htmlFor="contrasena">Contraseña:*</Form.Label>
         {errors.contrasena && (
           <p className="text-danger m-0 small">{errors.contrasena}</p>
         )}
@@ -168,7 +168,7 @@ const FormLogin = () => {
         <>
           {/* Nombre */}
           <Form.Group className="mb-3">
-            <Form.Label htmlFor="nombre">Nombre</Form.Label>
+            <Form.Label htmlFor="nombre">Nombre:*</Form.Label>
             {errors.nombre && (
               <p className="text-danger m-0 small">{errors.nombre}</p>
             )}
@@ -186,7 +186,7 @@ const FormLogin = () => {
 
           {/* Apellido */}
           <Form.Group className="mb-3">
-            <Form.Label htmlFor="apellido">Apellido</Form.Label>
+            <Form.Label htmlFor="apellido">Apellido:*</Form.Label>
             {errors.apellido && (
               <p className="text-danger m-0 small">{errors.apellido}</p>
             )}

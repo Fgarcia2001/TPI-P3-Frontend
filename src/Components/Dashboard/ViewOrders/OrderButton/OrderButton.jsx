@@ -99,7 +99,12 @@ const OrderButton = ({ order, refreshOrders }) => {
       >
         <Modal.Header className="d-flex flex-column gap-2" closeButton>
           <Modal.Title id="modal-orden-titulo">Orden #{order.id}</Modal.Title>
-          <h3>Pedido por : {order.usuario.nombre}</h3>
+          <h3>
+            Pedido por :{" "}
+            {order.usuario.nombre === "Usuario"
+              ? "Invitado"
+              : order.usuario.nombre}
+          </h3>
         </Modal.Header>
         <Modal.Body>
           {order.productos?.length ? (

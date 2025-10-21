@@ -9,7 +9,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router";
 
 const Admin = () => {
-  const [viewOption, setViewOption] = useState("Inicio");
+  const [viewOption, setViewOption] = useState("Productos");
   const handleViewOption = (value) => {
     setViewOption(value);
   };
@@ -38,9 +38,6 @@ const Admin = () => {
             </div>
           </Row>
 
-          {viewOption === "Inicio" && (
-            <h2 className="mt-5 fw-bold fs-1">Bienvenido a tu tienda.</h2>
-          )}
           {viewOption === "Productos" && <AbmProducts />}
           {viewOption === "Usuarios" && <ViewUser />}
           {viewOption === "Ordenes" && <ViewOrders />}

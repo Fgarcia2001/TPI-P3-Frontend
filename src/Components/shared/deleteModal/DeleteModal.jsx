@@ -6,7 +6,7 @@ const DeleteModal = ({
   onDelete = () => {},
   item = {},
   buttonLabel = "Eliminar",
-  elemento,
+  elemento = "elemento",
 }) => {
   const [show, setShow] = useState(false);
 
@@ -17,13 +17,8 @@ const DeleteModal = ({
     setShow(false);
   };
 
-  // Detectar tipo de item
-  const isAviso = Boolean(item?.imageUrl);
-  const isProducto = Boolean(item?.nombre || item?.imagen);
-
-  // Elegir qué mostrar
   const displayTitle = item?.nombre || "Elemento sin nombre";
-  const displayImage = item?.imagen || item?.imageUrl || null;
+  const displayImage = item?.imagen || item?.imageUrl;
 
   return (
     <>
@@ -31,23 +26,19 @@ const DeleteModal = ({
         {buttonLabel}
       </Button>
 
-      <Modal show={show} onHide={handleClose} animation={false} centered>
+      <Modal show={show} onHide={handleClose} centered animation={false}>
         <Modal.Header closeButton>
           <Modal.Title>Confirmar eliminación</Modal.Title>
         </Modal.Header>
 
         <Modal.Body className="text-center fs-5">
-          {!isAviso && (
-            <>
-              <p>¿Está seguro de eliminar este {elemento}?</p>
-              {isProducto && <p className="fs-3 fw-bold">{displayTitle}</p>}
-            </>
+          <p>¿Está seguro de eliminar este {elemento}?</p>
+          {elemento === "item" && (
+            <p className="fs-3 fw-bold">{displayTitle}</p>
           )}
 
-          {/* Mostrar imagen si existe */}
           {displayImage && (
             <div className="text-center my-3">
-              <p>¿Está seguro de eliminar este {elemento}?</p>
               <img
                 src={displayImage}
                 alt={displayTitle}
@@ -70,7 +61,7 @@ const DeleteModal = ({
           <Button variant="secondary" onClick={handleClose}>
             Volver
           </Button>
-          <Button variant="danger" onClick={handleDelete}>
+          <Button variant="danger" onClick={handleDelete} autoFocus>
             Confirmar
           </Button>
         </Modal.Footer>

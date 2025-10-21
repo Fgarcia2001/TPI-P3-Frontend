@@ -107,6 +107,7 @@ const AbmProducts = () => {
                 data={products}
                 onAddProduct={onAddProduct}
                 onAddCategories={onAddCategories}
+                categories={categories}
               />
             ) : (
               <PanelProducts

@@ -5,9 +5,10 @@ const tokenValue = localStorage.getItem("TokenJWT");
 const nameValue = localStorage.getItem("NombreContext");
 const rolValue = localStorage.getItem("RolContext");
 const idValue = localStorage.getItem("IdUserContext");
+const isLoggedValue = localStorage.getItem("isLogged") === "true"; // convierte string a boolean
 
 const AuthUserContextProvider = ({ children }) => {
-  const [isLogged, setIsLogged] = useState(false);
+  const [isLogged, setIsLogged] = useState(isLoggedValue);
   const [token, setToken] = useState(tokenValue);
   const [user, setUser] = useState(nameValue);
   const [rol, setRol] = useState(rolValue);
@@ -28,6 +29,7 @@ const AuthUserContextProvider = ({ children }) => {
       localStorage.setItem("IdUserContext", idUser);
 
       setIsLogged(true);
+      localStorage.setItem("isLogged", "true");
     } else {
       setUser(nombre);
       localStorage.setItem("NombreContext", nombre);
@@ -46,6 +48,7 @@ const AuthUserContextProvider = ({ children }) => {
     localStorage.removeItem("NombreContext");
     localStorage.removeItem("RolContext");
     localStorage.removeItem("IdUserContext");
+    localStorage.removeItem("isLogged");
     setIsLogged(false);
   };
 

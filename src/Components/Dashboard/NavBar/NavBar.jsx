@@ -8,7 +8,6 @@ import { CartContext } from "../../../Services/Cart/CartContext";
 
 const NavBar = ({ handleViewOption }) => {
   const sections = [
-    { name: "Inicio", icon: "bi-house-door" },
     { name: "Productos", icon: "bi-box-seam" },
     { name: "Ordenes", icon: "bi-receipt" },
     { name: "Usuarios", icon: "bi-people" },

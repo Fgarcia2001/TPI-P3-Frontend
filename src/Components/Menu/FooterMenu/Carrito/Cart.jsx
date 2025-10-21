@@ -147,6 +147,7 @@ const Cart = ({ show, handleClose, onHandleBuy }) => {
                       variant="outline-secondary"
                       className="rounded-1"
                       onClick={() => onModifyAmount(false, item.id)}
+                      disabled={item.cantidad === 1}
                     >
                       <i className="bi bi-dash-lg"></i>
                     </Button>
