@@ -26,7 +26,6 @@ const OrderButton = ({ order, refreshOrders }) => {
 
       setShow(false);
     } catch (err) {
-      console.error("Error al actualizar la orden:", err);
       errorToast(err.message);
     }
   };
@@ -54,7 +53,6 @@ const OrderButton = ({ order, refreshOrders }) => {
 
       return date.toLocaleString("es-ES", options);
     } catch (e) {
-      console.error("Error al parsear la fecha:", e);
       return dateString;
     }
   };
@@ -100,8 +98,8 @@ const OrderButton = ({ order, refreshOrders }) => {
         <Modal.Header className="d-flex flex-column gap-2" closeButton>
           <Modal.Title id="modal-orden-titulo">Orden #{order.id}</Modal.Title>
           <h3>
-            Pedido por :{" "}
-            {order.usuario.nombre === "Usuario"
+            Pedido por :
+            {order.usuario.nombre === "usuario"
               ? "Invitado"
               : order.usuario.nombre}
           </h3>

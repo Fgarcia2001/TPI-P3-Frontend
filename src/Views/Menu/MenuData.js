@@ -18,7 +18,7 @@ export const postLocalStorage = (item) => {
     const nuevoItem = { ...item, cantidad: 1 };
     const carritoActualizado = [...carritoActual, nuevoItem];
     localStorage.setItem("carrito", JSON.stringify(carritoActualizado));
-    console.log("Producto añadido al carrito:", nuevoItem);
+
     successToast(`${item.nombre} añadido al carrito`);
   } else {
     // Producto existe
@@ -28,7 +28,7 @@ export const postLocalStorage = (item) => {
         : product
     );
     localStorage.setItem("carrito", JSON.stringify(carritoActualizado));
-    console.log("Cantidad actualizada en el carrito:", item);
+
     successToast(`${item.nombre} añadido al carrito`);
   }
 };
@@ -41,15 +41,14 @@ export const deleteItemStorage = (item) => {
       (product) => product.id !== item.id
     );
     localStorage.setItem("carrito", JSON.stringify(carritoActualizado));
-    console.log("Producto eliminado del carrito:", item);
     errorToast(`${item.nombre} ah sido eliminado del carrito.`);
   } else {
-    console.log("El producto no está en el carrito:", item);
+    errorToast("El producto no está en el carrito:");
   }
 };
 export const modifiedAmount = (updateCart) => {
   if (!Array.isArray) {
-    console.log("Se espera un array en el carrito");
+    errorToast("Error en el carrito, reintente su compra");
     return;
   }
   localStorage.setItem("carrito", JSON.stringify(updateCart));

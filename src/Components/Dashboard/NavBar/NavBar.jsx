@@ -1,10 +1,10 @@
 import { useContext, useState } from "react";
-import { AuthUserContext } from "../../../Services/AuthUserContext/AuthUserContext";
-import "./NavBar.css";
-import { Button } from "react-bootstrap";
-import { successToast } from "../../shared/notifications/notification";
 import { useNavigate } from "react-router";
+import { Button } from "react-bootstrap";
+import { AuthUserContext } from "../../../Services/AuthUserContext/AuthUserContext";
+import { successToast } from "../../shared/notifications/notification";
 import { CartContext } from "../../../Services/Cart/CartContext";
+import "./NavBar.css";
 
 const NavBar = ({ handleViewOption }) => {
   const sections = [
@@ -17,7 +17,7 @@ const NavBar = ({ handleViewOption }) => {
   const { user, onLogout } = useContext(AuthUserContext);
   const { clearCart } = useContext(CartContext);
 
-  const [activeSection, setActiveSection] = useState("Inicio");
+  const [activeSection, setActiveSection] = useState("Productos");
   const navigate = useNavigate();
 
   const handleClick = (sectionName) => {

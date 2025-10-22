@@ -4,7 +4,7 @@ export const initFormData = {
   nombre: "",
   apellido: "",
   telefono: "",
-  rol: "sysadmin",
+  rol: "cliente",
 };
 
 export const initErrores = {
@@ -15,7 +15,7 @@ export const initErrores = {
   telefono: false,
 };
 
-export const singinInvited = {
+export const signinInvited = {
   contrasena: "12345",
-  email: "Invitado@gmail.com",
+  email: "invitado@gmail.com",
 };

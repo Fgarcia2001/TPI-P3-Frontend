@@ -1,8 +1,8 @@
 import { useContext, useEffect, useState } from "react";
-import { Button, Card, Spinner } from "react-bootstrap";
+import { Button, Accordion, Spinner } from "react-bootstrap";
 import useFetch from "../../../../useFetch/useFetch";
 import { AuthUserContext } from "../../../../Services/AuthUserContext/AuthUserContext";
-import "./OrdersUser.css"
+import "./OrdersUser.css";
 
 const OrdersUser = ({ onBack }) => {
   const { idUser } = useContext(AuthUserContext);
@@ -26,8 +26,6 @@ const OrdersUser = ({ onBack }) => {
       }
     );
   }, []);
-
-  // --- Renderizado Condicional de Estados (Loading, Error, Sin Órdenes) ---
 
   if (loading) {
     return (
@@ -66,9 +64,6 @@ const OrdersUser = ({ onBack }) => {
     );
   }
 
-  // --- Renderizado Principal de Órdenes ---
-
-  // Función auxiliar simple para normalizar el estado a minúsculas
   const getSimpleStatus = (status) => status?.toLowerCase() || "";
 
   return (
@@ -76,67 +71,73 @@ const OrdersUser = ({ onBack }) => {
       <h2 className="mb-3 mt-2">Tus Órdenes</h2>
 
       <div className="w-100 overflow-auto flex-grow-1 px-3">
-        {orders.map((order) => {
-          const status = getSimpleStatus(order.estado);
+        <Accordion defaultActiveKey="0">
+          {orders.map((order, idx) => {
+            const status = getSimpleStatus(order.estado);
 
-          const statusClass =
-            status === "aceptado"
-              ? "bg-success"
-              : status === "pendiente"
-              ? "bg-warning text-dark"
-              : status === "cancelado"
-              ? "bg-danger"
-              : "bg-secondary";
+            const statusClass =
+              status === "aceptado"
+                ? "bg-success"
+                : status === "pendiente"
+                ? "bg-warning text-dark"
+                : status === "cancelado"
+                ? "bg-danger"
+                : "bg-secondary";
 
-          return (
-            <Card key={order.id} className="mb-3 shadow-sm">
-              <Card.Header className="text-white orden">
-                <strong>Orden #{order.id}</strong>
-              </Card.Header>
-              <Card.Body>
-                {order.productos && order.productos.length > 0 ? (
-                  <ul className="list-unstyled mb-3">
-                    {order.productos.map((producto, index) => (
-                      <li
-                        key={index}
-                        className="d-flex justify-content-between align-items-center border-bottom pb-2 mb-2"
-                      >
-                        <span>
-                          <strong>{producto.nombre}</strong> ×{" "}
-                          {producto.cantidad}
-                        </span>
-                        <span className="text-secondary fw-bold">
-                          $
-                          {((producto.precio ?? 0) * producto.cantidad).toFixed(
-                            2
-                          )}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <div className="text-muted text-center py-2">
-                    Sin productos en esta orden.
+            return (
+              <Accordion.Item
+                key={order.id}
+                eventKey={idx.toString()}
+                className="mb-2 "
+              >
+                <Accordion.Header>
+                  <div className="d-flex justify-content-between align-items-center w-100 pe-3 ">
+                    <strong>Orden #{order.id}</strong>
                   </div>
-                )}
-
-                <hr />
-
-                <div className="d-flex justify-content-between align-items-center">
-                  <span>
-                    <strong>Estado:</strong>{" "}
-                    <span className={`badge ${statusClass}`}>
-                      {order.estado}
+                </Accordion.Header>
+                <Accordion.Body>
+                  {order.productos && order.productos.length > 0 ? (
+                    <ul className="list-unstyled mb-3">
+                      {order.productos.map((producto, index) => (
+                        <li
+                          key={index}
+                          className="d-flex justify-content-between align-items-center border-bottom pb-2 mb-2"
+                        >
+                          <span>
+                            <strong>{producto.nombre}</strong> ×
+                            {producto.cantidad}
+                          </span>
+                          <span className="text-secondary fw-bold">
+                            $
+                            {(
+                              (producto.precio ?? 0) * producto.cantidad
+                            ).toFixed(2)}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <div className="text-muted text-center py-2">
+                      Sin productos en esta orden.
+                    </div>
+                  )}
+                  <hr />
+                  <div className="d-flex justify-content-between align-items-center">
+                    <span>
+                      <strong>Estado:</strong>
+                      <span className={`badge ${statusClass} ms-2`}>
+                        {order.estado}
+                      </span>
                     </span>
-                  </span>
-                  <span className="fs-5 fw-bold text-success">
-                    Total: ${(order.total ?? order.price ?? 0).toFixed(2)}
-                  </span>
-                </div>
-              </Card.Body>
-            </Card>
-          );
-        })}
+                    <span className="fs-5 fw-bold text-success">
+                      Total: ${(order.total ?? order.price ?? 0).toFixed(2)}
+                    </span>
+                  </div>
+                </Accordion.Body>
+              </Accordion.Item>
+            );
+          })}
+        </Accordion>
       </div>
 
       <div className="w-100 mt-3 px-3">

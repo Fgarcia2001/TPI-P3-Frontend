@@ -1,18 +1,22 @@
-import { Col, Card, Button } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
+import { Col, Card, Button } from "react-bootstrap";
+import useFetch from "../../../useFetch/useFetch.jsx";
 import { AuthUserContext } from "../../../Services/AuthUserContext/AuthUserContext";
 import {
   errorToast,
   successToast,
 } from "../../shared/notifications/notification.js";
-import "./Products.css";
-import useFetch from "../../../useFetch/useFetch.jsx";
 import { CartContext } from "../../../Services/Cart/CartContext.jsx";
+import "./Products.css";
 
-const Products = ({ title, subTitle, imageUrl, price, itemCart }) => {
-  const navigate = useNavigate();
-
+const Products = ({
+  title,
+  subTitle,
+  imageUrl,
+  price,
+  itemCart,
+  onRemoveFavorite,
+}) => {
   const [isFlipped, setIsFlipped] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
 
@@ -45,17 +49,13 @@ const Products = ({ title, subTitle, imageUrl, price, itemCart }) => {
         `/favorites/${item.id}`,
         true,
         (data) => {
-          // ← Eliminá el {} vacío
           successToast(
-            `El producto ${
-              item.nombre || item.title
-            } fue ELIMINADO de favoritos con éxito.`
+            `El producto ${data.producto.nombre} fue ELIMINADO de favoritos con éxito.`
           );
           setIsFavorite(false);
-          console.log("Respuesta backend DELETE:", data);
+          onRemoveFavorite(item.id);
         },
         (err) => {
-          console.error("Error al eliminar:", err);
           errorToast("Error al eliminar el producto de favoritos.");
         }
       );
@@ -66,15 +66,11 @@ const Products = ({ title, subTitle, imageUrl, price, itemCart }) => {
         {},
         (data) => {
           successToast(
-            `El producto ${
-              data.nombre || item.title
-            } fue AGREGADO a favoritos con éxito.`
+            `El producto ${data.nombre} fue AGREGADO a favoritos con éxito.`
           );
           setIsFavorite(true);
-          console.log("Respuesta backend POST:", data);
         },
         (err) => {
-          console.error("Error al agregar:", err);
           errorToast("Error al agregar el producto a favoritos.");
         }
       );
@@ -93,7 +89,6 @@ const Products = ({ title, subTitle, imageUrl, price, itemCart }) => {
             <div className="image-container position-relative">
               <Card.Img variant="top" src={imageUrl} className="rounded" />
               <Button
-                // CORRECCIÓN: Se añade la clase 'is-favorite' condicional para el estilo visual
                 className={`favorite position-absolute top-0 end-0 ${
                   isFavorite ? "is-favorite" : ""
                 }`}

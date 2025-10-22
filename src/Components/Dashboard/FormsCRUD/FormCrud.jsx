@@ -1,9 +1,7 @@
-// FormCrud.jsx
-import { useState, useContext } from "react";
+import { useState } from "react";
 import { Form, Button } from "react-bootstrap";
-import { initFormData } from "./FormData";
 import useFetch from "../../../useFetch/useFetch";
-import { AuthUserContext } from "../../../Services/AuthUserContext/AuthUserContext";
+import { initFormData } from "./FormData";
 import {
   errorToast,
   successToast,
@@ -13,7 +11,6 @@ const FormCrud = ({ onAddProduct, onAddCategories, categories }) => {
   const [dataProduct, setDataProduct] = useState(initFormData);
   const [nuevaCategoria, setNuevaCategoria] = useState("");
 
-  const { token } = useContext(AuthUserContext);
   const { post, isLoading } = useFetch();
 
   const handleInputChange = (e) => {
@@ -72,7 +69,6 @@ const FormCrud = ({ onAddProduct, onAddCategories, categories }) => {
       payload,
       (data) => {
         successToast(`El producto ${data.nombre} fue agregado con éxito.`);
-        console.log("Respuesta backend:", data);
         onAddProduct(data);
 
         if (dataProduct.categoria === "otra") {
@@ -83,7 +79,6 @@ const FormCrud = ({ onAddProduct, onAddCategories, categories }) => {
         setNuevaCategoria("");
       },
       (err) => {
-        console.error("Error al enviar:", err);
         errorToast(err.message || "Hubo un error al crear el producto.");
       }
     );

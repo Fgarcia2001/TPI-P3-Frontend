@@ -1,12 +1,12 @@
+import { useState } from "react";
+import { useNavigate } from "react-router";
 import { Button, Col, Row } from "react-bootstrap";
 import NavBar from "../../Components/Dashboard/NavBar/NavBar";
-import "./Admin.css";
 import AbmProducts from "../../Components/Dashboard/AbmProducts/AbmProducts";
 import ViewUser from "../../Components/Dashboard/ViewUsers/ViewUser";
 import ViewOrders from "../../Components/Dashboard/ViewOrders/ViewOrders";
 import VievPost from "../../Components/Dashboard/ViewPost/VievPost";
-import { useState } from "react";
-import { useNavigate } from "react-router";
+import "./Admin.css";
 
 const Admin = () => {
   const [viewOption, setViewOption] = useState("Productos");

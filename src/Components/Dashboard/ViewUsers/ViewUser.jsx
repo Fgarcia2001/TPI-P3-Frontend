@@ -1,12 +1,12 @@
 import { useContext, useEffect, useState } from "react";
 import { Card, Col, Row } from "react-bootstrap";
+import useFetch from "../../../useFetch/useFetch";
 import { AuthUserContext } from "../../../Services/AuthUserContext/AuthUserContext";
 import UserRow from "./UserRow/UserRow";
 import {
   EditToast,
   successToast,
 } from "../../shared/notifications/notification";
-import useFetch from "../../../useFetch/useFetch";
 
 const ViewUser = () => {
   const [users, setUsers] = useState([]);
@@ -37,7 +37,7 @@ const ViewUser = () => {
       },
       (err) => {
         setError(err.message);
-        console.error("Error al obtener usuarios:", err);
+
         setLoading(false);
       }
     );
@@ -71,10 +71,9 @@ const ViewUser = () => {
         );
         setEditingId(null);
         EditToast(`Usuario ${updatedUser.nombre} editado con éxito.`);
-        console.log("Usuario actualizado con éxito:", updatedUser);
       },
       (err) => {
-        console.error("Error al actualizar el usuario:", err);
+        EditToast(`${err.message}`);
       }
     );
   };
@@ -91,10 +90,9 @@ const ViewUser = () => {
       () => {
         setUsers(users.filter((user) => user.id !== item.id));
         successToast(`El usuario ${item.nombre} ha sido eliminado.`);
-        console.log("Usuario eliminado con éxito:", item);
       },
       (err) => {
-        console.error("Error al eliminar el usuario:", err);
+        EditToast(`${err.message}`);
       }
     );
   };

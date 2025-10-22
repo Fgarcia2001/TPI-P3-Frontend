@@ -1,6 +1,6 @@
 import { Button, Form } from "react-bootstrap";
-import "./ProductRow.css"; // Se añade un archivo CSS para estilos personalizados
 import DeleteModal from "../../../shared/deleteModal/DeleteModal";
+import "./ProductRow.css";
 
 const ProductRow = ({
   item,
@@ -26,8 +26,8 @@ const ProductRow = ({
           <img
             src={item.imagen}
             alt={item.nombre}
-            className="img-fluid rounded fs-5" // Se añade img-fluid y rounded para mejor visualización
-            style={{ maxWidth: "100px", height: "auto" }} // Se ajusta el estilo a max-width
+            className="img-fluid rounded fs-5"
+            style={{ maxWidth: "100px", height: "auto" }}
           />
         )}
       </td>
@@ -53,7 +53,7 @@ const ProductRow = ({
             onChange={onChange}
           />
         ) : (
-          <span className="fw-bold">{item.descripcion}</span>
+          <span className="fw-bold fs-4">{item.descripcion}</span>
         )}
       </td>
       <td>

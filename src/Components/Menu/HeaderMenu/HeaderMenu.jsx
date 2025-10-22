@@ -1,24 +1,22 @@
-import { Row, Col, Button } from "react-bootstrap";
-import User from "../../../assets/HeaderMenu/User.png";
-import Tray from "../../../assets/HeaderMenu/tray.png";
-import Yummy from "../../../assets/Yummy-Coffe-Logo.ico";
-import "./HeaderMenu.css";
-import Profile from "../Profile/Profile";
 import { useContext, useState } from "react";
+import { Row, Col, Button } from "react-bootstrap";
 import { useNavigate } from "react-router";
+import User from "../../../assets/HeaderMenu/User.png";
+import Profile from "../Profile/Profile";
 import { AuthUserContext } from "../../../Services/AuthUserContext/AuthUserContext";
-import { h1 } from "motion/react-client";
+import "./HeaderMenu.css";
 
 const HeaderMenu = () => {
   const [show, setShow] = useState(false);
+  // Componenete
   const handleShow = () => setShow(true);
-  const onHide = () => {
-    setShow(false);
-  };
+  // Callback
+  const onHide = () => setShow(false);
 
   const { isLogged, user } = useContext(AuthUserContext);
 
   const navigate = useNavigate();
+
   return (
     <>
       <Row className="d-flex header-menu align-items-center border-bottom border-3 shadow ">

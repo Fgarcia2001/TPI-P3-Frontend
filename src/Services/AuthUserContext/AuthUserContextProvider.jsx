@@ -5,7 +5,7 @@ const tokenValue = localStorage.getItem("TokenJWT");
 const nameValue = localStorage.getItem("NombreContext");
 const rolValue = localStorage.getItem("RolContext");
 const idValue = localStorage.getItem("IdUserContext");
-const isLoggedValue = localStorage.getItem("isLogged") === "true"; // convierte string a boolean
+const isLoggedValue = localStorage.getItem("isLogged") === "true";
 
 const AuthUserContextProvider = ({ children }) => {
   const [isLogged, setIsLogged] = useState(isLoggedValue);
@@ -15,7 +15,7 @@ const AuthUserContextProvider = ({ children }) => {
   const [idUser, setIdUser] = useState(idValue);
 
   const handleLogin = (token, nombre, rol, idUser) => {
-    if (nombre !== "Usuario") {
+    if (nombre !== "usuario") {
       setToken(token);
       localStorage.setItem("TokenJWT", token);
 

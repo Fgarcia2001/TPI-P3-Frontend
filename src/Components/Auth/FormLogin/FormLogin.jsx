@@ -2,15 +2,15 @@ import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
-import { initFormData, initErrores, singinInvited } from "./FomLogin.data";
+import useFetch from "../../../useFetch/useFetch";
 import { AuthUserContext } from "../../../Services/AuthUserContext/AuthUserContext";
 import { jwtDecode } from "jwt-decode";
-import "./FormLogin.css";
+import { initFormData, initErrores, signinInvited } from "./FomLogin.data";
 import {
   errorToast,
   successToast,
 } from "../../shared/notifications/notification";
-import useFetch from "../../../useFetch/useFetch";
+import "./FormLogin.css";
 
 const FormLogin = () => {
   const [isRegisterMode, setIsRegisterMode] = useState(false);
@@ -64,11 +64,10 @@ const FormLogin = () => {
         newErrors.telefono = "El teléfono es requerido.";
         isValid = false;
       } else {
-        // Regex para teléfono argentino: 10 dígitos, puede empezar con 15
-        const phoneRegex = /^(?:15)?[0-9]{8,10}$/;
+        const phoneRegex = /^(?:15)?[0-9]{9,10}$/;
         if (!phoneRegex.test(formData.telefono)) {
           newErrors.telefono =
-            "Teléfono inválido. Debe tener entre 8 y 10 dígitos.";
+            "Teléfono inválido. Debe tener entre 9 y 10 dígitos.";
           isValid = false;
         }
       }
@@ -101,7 +100,7 @@ const FormLogin = () => {
         }
       },
       (err) => {
-        console.error("Error en la respuesta:", err);
+        
         errorToast(err.message);
       }
     );
@@ -111,7 +110,7 @@ const FormLogin = () => {
     post(
       "/user/login",
       false,
-      singinInvited,
+      signinInvited,
       (data) => {
         const decoded = jwtDecode(data.token);
         onLogin(data.token, data.user.nombre, decoded.rol, decoded.id);
@@ -119,7 +118,7 @@ const FormLogin = () => {
         successToast("Accediste como invitado.");
       },
       (err) => {
-        console.error("Error en la respuesta:", err);
+        
         errorToast(err.message);
       }
     );

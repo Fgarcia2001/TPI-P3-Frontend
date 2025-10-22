@@ -1,8 +1,8 @@
-import { Button, Col, Row, Container } from "react-bootstrap";
-import FormCrud from "../../Dashboard/FormsCRUD/FormCrud";
 import { useEffect, useState } from "react";
-import PanelProducts from "../PanelProducts/PanelProducts";
+import { Button, Col, Row, Container } from "react-bootstrap";
 import useFetch from "../../../useFetch/useFetch";
+import FormCrud from "../../Dashboard/FormsCRUD/FormCrud";
+import PanelProducts from "../PanelProducts/PanelProducts";
 import Search from "../../shared/search/Search";
 
 const AbmProducts = () => {
@@ -10,16 +10,15 @@ const AbmProducts = () => {
   const [valueFilter, setValueFilter] = useState("");
   const [searchValue, setSearchValue] = useState("");
   const [products, setProducts] = useState([]);
-  const [errorProducts, setErrorProducts] = useState("");
   const [categories, setCategories] = useState([]);
   const [errorCategories, setErrorCategories] = useState("");
 
   const { get, isLoading } = useFetch();
 
   useEffect(() => {
-    get("/products", false, setProducts, setErrorProducts);
+    get("/products", false, setProducts);
     get("/categories", false, setCategories, setErrorCategories);
-  }, []);
+  }, [addProduct, valueFilter]);
 
   const handleChangeFilter = (value) => {
     setValueFilter(value);

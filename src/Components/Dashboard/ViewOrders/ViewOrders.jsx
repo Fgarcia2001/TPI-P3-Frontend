@@ -1,27 +1,17 @@
 import { useEffect, useState } from "react";
 import { Spinner, Container, Row, Col, Badge } from "react-bootstrap";
-import OrderButton from "./OrderButton/OrderButton";
 import useFetch from "../../../useFetch/useFetch";
+import OrderButton from "./OrderButton/OrderButton";
 import "./ViewOrders.css";
 
 const ViewOrders = () => {
   const [orders, setOrders] = useState([]);
-  const [errorOrders, setErrorOrders] = useState("");
   const { get, isLoading } = useFetch();
 
   useEffect(() => {
-    get(
-      "/orders",
-      true,
-      (data) => {
-        setOrders(data);
-        console.log("Órdenes cargadas:", data);
-      },
-      (error) => {
-        setErrorOrders(error.message || "Error al cargar las órdenes");
-        console.error("Error al cargar órdenes:", error);
-      }
-    );
+    get("/orders", true, (data) => {
+      setOrders(data);
+    });
   }, []);
 
   if (isLoading) {

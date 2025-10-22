@@ -1,14 +1,14 @@
-import { Container, Row, Col } from "react-bootstrap";
-import Cart from "../FooterMenu/Carrito/Cart";
-import "./FooterMenu.css";
 import { useContext, useState } from "react";
-import { CartContext } from "../../../Services/Cart/CartContext";
+import { Container, Row, Col } from "react-bootstrap";
 import useFetch from "../../../useFetch/useFetch";
+import Cart from "../FooterMenu/Carrito/Cart";
 import {
   successToast,
   errorToast,
 } from "../../shared/notifications/notification";
+import { CartContext } from "../../../Services/Cart/CartContext";
 import { AuthUserContext } from "../../../Services/AuthUserContext/AuthUserContext";
+import "./FooterMenu.css";
 
 const FooterMenu = ({ HandleFavoritesView }) => {
   const [botons, setBotons] = useState({
@@ -38,6 +38,7 @@ const FooterMenu = ({ HandleFavoritesView }) => {
   const handleCloseCartModal = () => {
     setShowCartModal(false);
     setBotons({ home: true, heart: false, cart: false });
+    HandleFavoritesView(false);
   };
 
   const handleBuy = (prodCart) => {
@@ -55,16 +56,11 @@ const FooterMenu = ({ HandleFavoritesView }) => {
       true,
       orderBody,
       (newOrder) => {
-        console.log("¡Orden creada con éxito!", newOrder);
         successToast("¡Orden creada con éxito!");
-
-        // Opcionalmente limpiar el carrito después de la compra
         if (clearCart) clearCart();
-
         handleCloseCartModal();
       },
       (error) => {
-        console.error("Hubo un problema al intentar la compra:", error);
         errorToast(error.message || "Error al crear la orden");
       }
     );

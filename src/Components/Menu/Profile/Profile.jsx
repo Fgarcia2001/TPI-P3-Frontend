@@ -1,9 +1,9 @@
 import { useContext, useState } from "react";
 import { Button, Offcanvas } from "react-bootstrap";
+import { useNavigate } from "react-router";
 import OrdersUser from "./OrdersUser/OrdersUser";
 import { AuthUserContext } from "../../../Services/AuthUserContext/AuthUserContext";
 import { successToast } from "../../shared/notifications/notification";
-import { useNavigate } from "react-router";
 import { CartContext } from "../../../Services/Cart/CartContext";
 
 const Profile = ({ show, onHide }) => {
@@ -46,7 +46,7 @@ const Profile = ({ show, onHide }) => {
                 </div>
 
                 <Button
-                  className="rounded-pill px-4 m-4 button-Profile"
+                  className="rounded-pill px-4 m-4 button-Profile border-secondary"
                   onClick={handleShowOrders}
                 >
                   Ver Mis Órdenes
@@ -55,7 +55,7 @@ const Profile = ({ show, onHide }) => {
                 {(rol === "admin" || rol === "sysadmin") && (
                   <Button
                     onClick={() => navigate("/admin")}
-                    className="rounded-pill px-4 m-4 button-Profile"
+                    className="rounded-pill px-4 m-4 button-Profile border-secondary"
                   >
                     Panel de administrador
                   </Button>

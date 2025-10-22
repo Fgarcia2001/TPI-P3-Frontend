@@ -1,7 +1,7 @@
+import { useState } from "react";
 import MenuBody from "../../Components/Menu/MenuBody/MenuBody";
 import FooterMenu from "../../Components/Menu/FooterMenu/FooterMenu";
 import HeaderMenu from "../../Components/Menu/HeaderMenu/HeaderMenu";
-import { useState } from "react";
 import Favorites from "../../Components/Menu/Favorites/Favorites";
 
 const Menu = () => {

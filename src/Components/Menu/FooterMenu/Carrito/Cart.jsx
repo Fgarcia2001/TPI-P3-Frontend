@@ -1,23 +1,22 @@
-// Cart.jsx
+import { useContext, useEffect, useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
+import { jwtDecode } from "jwt-decode";
 import {
   GetLocalStorage,
   deleteItemStorage,
   modifiedAmount,
 } from "../../../../Views/Menu/MenuData";
-import "./Cart.css";
-import { useContext, useEffect, useState } from "react";
 import { AuthUserContext } from "../../../../Services/AuthUserContext/AuthUserContext";
 import { CartContext } from "../../../../Services/Cart/CartContext";
 import ModalNotLogged from "./ModalNotLogged/ModalNotLogged";
 import useFetch from "../../../../useFetch/useFetch";
-import { singinInvited } from "../../../Auth/FormLogin/FomLogin.data";
-import { jwtDecode } from "jwt-decode";
+import { signinInvited } from "../../../Auth/FormLogin/FomLogin.data";
 import {
   errorToast,
   successToast,
 } from "../../../shared/notifications/notification";
+import "./Cart.css";
 
 const Cart = ({ show, handleClose, onHandleBuy }) => {
   const [prodCart, setProdCat] = useState([]);
@@ -54,7 +53,7 @@ const Cart = ({ show, handleClose, onHandleBuy }) => {
   };
 
   const OnHandleSubmitBuy = () => {
-    if (!isLogged && user !== "Usuario") {
+    if (!isLogged && user !== "usuario") {
       setShowNotLoggedModal(true);
       return;
     }
@@ -70,13 +69,12 @@ const Cart = ({ show, handleClose, onHandleBuy }) => {
     post(
       "/user/login",
       false,
-      singinInvited,
+      signinInvited,
       (data) => {
         const decoded = jwtDecode(data.token);
         onLogin(data.token, data.user.nombre, decoded.rol, decoded.id);
       },
       (err) => {
-        console.error("Error en la respuesta:", err);
         errorToast(err.message);
       }
     );

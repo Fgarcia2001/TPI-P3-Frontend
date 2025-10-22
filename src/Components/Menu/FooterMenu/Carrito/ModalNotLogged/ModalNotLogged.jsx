@@ -23,7 +23,7 @@ const ModalNotLogged = ({ show, onHide, onContinue }) => {
           <i className="bi bi-person-x fs-1 text-muted d-block mb-3"></i>
           <h5 className="mb-3">No estás logueado</h5>
           <p className="text-muted mb-0">
-            Si continuás sin iniciar sesión,{" "}
+            Si continuás sin iniciar sesión,
             <strong>no se guardará el historial de tu orden</strong>
           </p>
         </div>

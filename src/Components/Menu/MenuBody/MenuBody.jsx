@@ -1,13 +1,13 @@
+import { useEffect, useState } from "react";
 import { Row, Col, Image, Spinner } from "react-bootstrap";
+import useFetch from "../../../useFetch/useFetch";
 import Products from "../Products/Products";
 import Post from "../Post/Post";
-import { useEffect, useState } from "react";
-import useFetch from "../../../useFetch/useFetch";
-import "./MenuBody.css";
 import NoProducts from "../../../assets/i_need_coffee.png";
 import LoadingProducts from "../../../assets/pagina.PNG";
 import Search from "../../shared/search/Search";
 import { errorToast } from "../../shared/notifications/notification";
+import "./MenuBody.css";
 
 const MenuBody = () => {
   const [products, setProducts] = useState([]);
@@ -36,10 +36,8 @@ const MenuBody = () => {
       true,
       (data) => {
         setAvisos(data);
-        console.log("Ofertas cargadas:", data);
       },
       (err) => {
-        console.error("Error al cargar ofertas:", err);
         errorToast(err.message || "Error al cargar ofertas");
       }
     );
@@ -50,12 +48,10 @@ const MenuBody = () => {
 
   const handleChangeFilter = (value) => {
     setValueFilter(value);
-    setSearchValue("");
   };
 
   const handleSearch = (event) => {
     setSearchValue(event.target.value);
-    setValueFilter("");
   };
 
   const arrayProducts = () => {

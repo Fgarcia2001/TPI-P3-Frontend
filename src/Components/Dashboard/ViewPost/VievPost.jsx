@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import { Col, Row, Container, Form, Button, Card } from "react-bootstrap";
+import useFetch from "../../../useFetch/useFetch";
 import DeleteModal from "../../shared/deleteModal/DeleteModal";
 import {
   successToast,
   errorToast,
 } from "../../shared/notifications/notification";
-import useFetch from "../../../useFetch/useFetch";
 
 const ViewPost = () => {
   const [urlInput, setUrlInput] = useState("");
@@ -18,10 +18,8 @@ const ViewPost = () => {
       true,
       (data) => {
         setPreviewAvisos(data);
-        console.log("Ofertas cargadas:", data);
       },
       (err) => {
-        console.error("Error al cargar ofertas:", err);
         errorToast(err.message || "Error al cargar ofertas");
       }
     );
@@ -35,7 +33,7 @@ const ViewPost = () => {
     }
 
     const newAviso = {
-      imagen: urlInput, // ✅ Cambio aquí: "imagen" en vez de "imageUrl"
+      imagen: urlInput,
     };
 
     post(
@@ -46,10 +44,9 @@ const ViewPost = () => {
         setPreviewAvisos([...previewAvisos, data]);
         successToast("Aviso agregado con éxito");
         setUrlInput("");
-        console.log("Aviso creado:", data);
       },
       (err) => {
-        console.error("Error al agregar aviso:", err);
+      
         errorToast(err.message || "Error al agregar el aviso");
       }
     );
@@ -62,10 +59,9 @@ const ViewPost = () => {
       (data) => {
         successToast("Aviso eliminado con éxito");
         setPreviewAvisos(previewAvisos.filter((a) => a.id !== aviso.id));
-        console.log("Aviso eliminado:", data);
       },
       (err) => {
-        console.error("Error al eliminar:", err);
+        
         errorToast(err.message || "Error al eliminar el aviso");
       }
     );
