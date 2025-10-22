@@ -121,6 +121,7 @@ const MenuBody = () => {
                 imageUrl={item.imagen}
                 price={item.precio}
                 itemCart={item}
+                onRemoveFavorite={() => {}}
               />
             ))
           : !isLoading &&
