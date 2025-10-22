@@ -56,7 +56,7 @@ const FooterMenu = ({ HandleFavoritesView }) => {
       true,
       orderBody,
       (newOrder) => {
-        successToast("¡Orden creada con éxito!");
+        successToast(`¡La Orden n° ${newOrder.id} fue creada con éxito!`);
         if (clearCart) clearCart();
         handleCloseCartModal();
       },

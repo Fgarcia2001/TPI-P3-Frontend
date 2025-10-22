@@ -117,9 +117,15 @@
   border: none;
 }
 
+.favorite:active,
+.favorite:focus,
 .favorite:hover {
-  background-color: transparent;
+  background-color: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  outline: none !important;
 }
+
 /* --- ESTILOS PARA LA ANIMACIÓN DE GIRO DE LA TARJETA --- */
 
 .card-flip-container {

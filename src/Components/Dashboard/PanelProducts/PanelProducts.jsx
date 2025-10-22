@@ -67,7 +67,7 @@ const PanelProducts = ({ products, onDeleteProduct }) => {
       `/products/${item.id}`,
       true,
       (data) => {
-        successToast(`El producto ${data.nombre} fue eliminado con éxito.`);
+        successToast(`El producto ${item.nombre} fue eliminado con éxito.`);
 
         const NewDataProducts = products.filter(
           (product) => product.id != item.id

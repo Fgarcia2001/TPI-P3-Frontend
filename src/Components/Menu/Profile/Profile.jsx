@@ -3,7 +3,6 @@ import { Button, Offcanvas } from "react-bootstrap";
 import { useNavigate } from "react-router";
 import OrdersUser from "./OrdersUser/OrdersUser";
 import { AuthUserContext } from "../../../Services/AuthUserContext/AuthUserContext";
-import { successToast } from "../../shared/notifications/notification";
 import { CartContext } from "../../../Services/Cart/CartContext";
 
 const Profile = ({ show, onHide }) => {
@@ -24,7 +23,6 @@ const Profile = ({ show, onHide }) => {
   const handleLogout = () => {
     onLogout();
     clearCart();
-    successToast("Sesión cerrada con éxito.");
     onHide();
   };
 

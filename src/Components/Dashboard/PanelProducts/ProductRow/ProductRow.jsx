@@ -1,6 +1,5 @@
 import { Button, Form } from "react-bootstrap";
 import DeleteModal from "../../../shared/deleteModal/DeleteModal";
-import "./ProductRow.css";
 
 const ProductRow = ({
   item,
@@ -53,7 +52,7 @@ const ProductRow = ({
             onChange={onChange}
           />
         ) : (
-          <span className="fw-bold fs-4">{item.descripcion}</span>
+          <span className="fw-bold fs-5">{item.descripcion}</span>
         )}
       </td>
       <td>

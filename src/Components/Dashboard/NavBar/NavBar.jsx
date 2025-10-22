@@ -2,7 +2,7 @@ import { useContext, useState } from "react";
 import { useNavigate } from "react-router";
 import { Button } from "react-bootstrap";
 import { AuthUserContext } from "../../../Services/AuthUserContext/AuthUserContext";
-import { successToast } from "../../shared/notifications/notification";
+
 import { CartContext } from "../../../Services/Cart/CartContext";
 import "./NavBar.css";
 
@@ -28,7 +28,7 @@ const NavBar = ({ handleViewOption }) => {
   const handleLogout = () => {
     onLogout();
     clearCart();
-    successToast("Sesión cerrada con éxito");
+  
     navigate("/auth");
   };
 

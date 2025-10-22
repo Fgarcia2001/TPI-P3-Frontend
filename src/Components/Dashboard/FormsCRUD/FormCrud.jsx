@@ -33,6 +33,7 @@ const FormCrud = ({ onAddProduct, onAddCategories, categories }) => {
     if (
       !dataProduct.nombre ||
       !dataProduct.precio ||
+      dataProduct.categoria === "" ||
       !dataProduct.descripcion ||
       !dataProduct.imagen
     ) {

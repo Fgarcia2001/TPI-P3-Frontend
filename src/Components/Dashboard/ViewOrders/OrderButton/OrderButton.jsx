@@ -57,12 +57,12 @@ const OrderButton = ({ order, refreshOrders }) => {
     }
   };
 
-  // Paso el dia
+  // Paso 12 hs desde el pedido
   const isOrderExpired = () => {
     const orderDate = new Date(order.fecha);
     const currentDate = new Date();
     const timeDifference = currentDate - orderDate;
-    const oneDayInMs = 24 * 60 * 60 * 1000;
+    const oneDayInMs = 12 * 60 * 60 * 1000;
 
     return timeDifference > oneDayInMs;
   };
@@ -127,7 +127,7 @@ const OrderButton = ({ order, refreshOrders }) => {
           {expired && (
             <div className="alert alert-warning mb-3" role="alert">
               <i className="bi bi-exclamation-triangle-fill me-2"></i>
-              Esta orden tiene más de 24 horas. No se puede modificar su estado.
+              Esta orden tiene más de 12 horas. No se puede modificar su estado.
             </div>
           )}
 
