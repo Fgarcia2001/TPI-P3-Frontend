@@ -1,39 +1,80 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
+import { useNavigate } from "react-router";
+import { Button } from "react-bootstrap";
 import { AuthUserContext } from "../../../Services/AuthUserContext/AuthUserContext";
+import { successToast } from "../../shared/notifications/notification";
+import { CartContext } from "../../../Services/Cart/CartContext";
 import "./NavBar.css";
 
 const NavBar = ({ handleViewOption }) => {
   const sections = [
-    "Inicio",
-    "Productos",
-    "Ordenes",
-    "Usuarios",
-    "Cerrar sesion",
+    { name: "Productos", icon: "bi-box-seam" },
+    { name: "Ordenes", icon: "bi-receipt" },
+    { name: "Usuarios", icon: "bi-people" },
+    { name: "Avisos", icon: "bi bi-card-image" },
   ];
+
   const { user, onLogout } = useContext(AuthUserContext);
+  const { clearCart } = useContext(CartContext);
+
+  const [activeSection, setActiveSection] = useState("Productos");
+  const navigate = useNavigate();
+
+  const handleClick = (sectionName) => {
+    setActiveSection(sectionName);
+    handleViewOption(sectionName);
+  };
+
+  const handleLogout = () => {
+    onLogout();
+    clearCart();
+    successToast("Sesión cerrada con éxito");
+    navigate("/auth");
+  };
+
   return (
-    <>
-      <div className="mt-3 mb-5">
-        <h1 className="fs-1 fw-bold">Tu tienda</h1>
+    <div className="navbar-container">
+      {/* Header */}
+      <div className="navbar-header">
+        <h2 className="store-title">Tu Tienda</h2>
       </div>
-      <ul className="list-unstyled d-flex flex-column justify-content-start h-100 mt-5">
-        {sections.map((section, index) => (
-          <li
-            className="section bg-secondary border-bottom rounded-3"
-            key={index}
-            onClick={() => handleViewOption(section)}
-          >
-            <div>{}</div>
-            <div>
-              <p className="titleSection">{section}</p>
-            </div>
-          </li>
-        ))}
-      </ul>
-      <div>
-        <h1>{user}</h1>
+
+      {/* Menu Items */}
+      <nav className="navbar-menu">
+        <ul className="list-unstyled">
+          {sections.map((section, index) => (
+            <li
+              className={`nav-item ${
+                activeSection === section.name ? "active" : ""
+              }`}
+              key={index}
+              onClick={() => handleClick(section.name)}
+            >
+              <i className={`bi ${section.icon}`}></i>
+              <span>{section.name}</span>
+            </li>
+          ))}
+        </ul>
+      </nav>
+
+      {/* User Footer */}
+      <div className="navbar-footer">
+        <div className="user-info">
+          <i className="bi bi-person-circle"></i>
+          <span>{user}</span>
+        </div>
+
+        <Button
+          className="w-100 mt-2"
+          variant="danger"
+          size="sm"
+          onClick={handleLogout}
+        >
+          <i className="bi bi-box-arrow-right me-2"></i>
+          Cerrar sesión
+        </Button>
       </div>
-    </>
+    </div>
   );
 };
 

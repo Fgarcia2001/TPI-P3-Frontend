@@ -1,19 +1,18 @@
-import { Image, Carousel } from "react-bootstrap";
+import { Carousel } from "react-bootstrap";
 import "./Post.css";
 
 const Post = ({ avisos }) => {
   return (
-    <Carousel fade className="carousel-aviso ">
+    <Carousel fade interval={3000} className="carousel-ml-style w-75">
       {avisos.map((aviso, index) => (
-        <Carousel.Item
-          key={index}
-          className="container-Carrousel"
-        >
-          <Image
-            className="w-100 carousel-img "
-            src={aviso.imageUrl}
-            alt="First slide"
-          />
+        <Carousel.Item key={index}>
+          <div className="carousel-image-wrapper">
+            <img
+              className="d-block w-100 carousel-image"
+              src={aviso.imagen}
+              alt={aviso.imagen}
+            />
+          </div>
         </Carousel.Item>
       ))}
     </Carousel>
@@ -21,4 +20,3 @@ const Post = ({ avisos }) => {
 };
 
 export default Post;
-

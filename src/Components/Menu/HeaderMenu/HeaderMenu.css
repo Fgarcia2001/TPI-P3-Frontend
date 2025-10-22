@@ -1,5 +1,9 @@
-.header-menu {
-  
+.button-Profile {
+  background-color: #b19583;
+}
+
+.button-Profile:hover {
+  background-color: #694026;
 }
 
 .icon {

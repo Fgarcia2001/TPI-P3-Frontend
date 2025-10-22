@@ -1,6 +1,6 @@
 import { Button, Form } from "react-bootstrap";
-import "./ProductRow.css"; // Se añade un archivo CSS para estilos personalizados
 import DeleteModal from "../../../shared/deleteModal/DeleteModal";
+import "./ProductRow.css";
 
 const ProductRow = ({
   item,
@@ -26,8 +26,8 @@ const ProductRow = ({
           <img
             src={item.imagen}
             alt={item.nombre}
-            className="img-fluid rounded fs-5" // Se añade img-fluid y rounded para mejor visualización
-            style={{ maxWidth: "100px", height: "auto" }} // Se ajusta el estilo a max-width
+            className="img-fluid rounded fs-5"
+            style={{ maxWidth: "100px", height: "auto" }}
           />
         )}
       </td>
@@ -46,14 +46,14 @@ const ProductRow = ({
       <td>
         {isEditing ? (
           <Form.Control
-            as="textarea" // Se usa un textarea para la descripción
+            as="textarea"
             rows={3}
             name="descripcion"
             value={dataProduct.descripcion ?? ""}
             onChange={onChange}
           />
         ) : (
-          item.descripcion
+          <span className="fw-bold fs-4">{item.descripcion}</span>
         )}
       </td>
       <td>
@@ -65,27 +65,23 @@ const ProductRow = ({
             onChange={onChange}
           />
         ) : (
-          `$${item.precio.toFixed(2)}` // Formato de moneda
+          `$${item.precio.toFixed(2)}`
         )}
       </td>
-      <td>
+      <td className="align-items-center">
         {isEditing ? (
-          <Form.Check
-            type="switch"
-            name="disponible"
-            checked={dataProduct.disponible}
-            onChange={onChange}
-          />
-        ) : (
           <>
-            <h6>{item.disponible ? "Disponible" : "No disponible"}</h6>
             <Form.Check
               type="switch"
               name="disponible"
-              checked={item.disponible}
-              disabled
+              checked={dataProduct.disponible}
+              onChange={onChange}
             />
           </>
+        ) : (
+          <span className="fw-bold">
+            {item.disponible ? "Disponible" : "No disponible"}
+          </span>
         )}
       </td>
       <td>
@@ -107,7 +103,7 @@ const ProductRow = ({
             <Button onClick={onEdit} variant="warning" className="mb-1 me-sm-1">
               Editar
             </Button>
-            <DeleteModal onDelete={onDelete} item={item} />
+            <DeleteModal onDelete={onDelete} item={item} elemento={"item"} />
           </div>
         )}
       </td>

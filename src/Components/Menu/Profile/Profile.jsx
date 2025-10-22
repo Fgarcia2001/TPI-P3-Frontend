@@ -1,49 +1,106 @@
-import { useContext } from "react";
-import { Button, Image } from "react-bootstrap";
-import { AuthUserContext } from "../../../Services/AuthUserContext/AuthUserContext";
-import Offcanvas from "react-bootstrap/Offcanvas";
-import { errorToast } from "../../shared/notifications/notification";
+import { useContext, useState } from "react";
+import { Button, Offcanvas } from "react-bootstrap";
 import { useNavigate } from "react-router";
+import OrdersUser from "./OrdersUser/OrdersUser";
+import { AuthUserContext } from "../../../Services/AuthUserContext/AuthUserContext";
+import { successToast } from "../../shared/notifications/notification";
+import { CartContext } from "../../../Services/Cart/CartContext";
 
-function Profile({ show, onHide }) {
-  const { rol, user, onLogout } = useContext(AuthUserContext);
+const Profile = ({ show, onHide }) => {
+  const { isLogged, rol, user, onLogout } = useContext(AuthUserContext);
+  const { clearCart } = useContext(CartContext);
   const navigate = useNavigate();
 
+  const [showOrders, setShowOrders] = useState(false);
+
+  const handleBack = () => {
+    setShowOrders(false);
+  };
+
+  const handleShowOrders = () => {
+    setShowOrders(true);
+  };
+
+  const handleLogout = () => {
+    onLogout();
+    clearCart();
+    successToast("Sesión cerrada con éxito.");
+    onHide();
+  };
+
   return (
-    <>
-      <Offcanvas show={show} onHide={onHide}>
-        <Offcanvas.Header closeButton>
-          <Offcanvas.Title>{user}</Offcanvas.Title>
-        </Offcanvas.Header>
-        <Offcanvas.Body className="d-flex flex-column w-100 justify-content-center text-center">
-          <div className="align-items-center">
-            <h1>¡Bienvenido a Yummy Coffee !</h1>
-          </div>
-          {/* <Offcanvas.Title className="fs-1 fw-bold">{user}</Offcanvas.Title> */}
-          <Button className="rounded-pill px-4 m-4">Ordenes</Button>
-          <Button className="rounded-pill px-4 m-4">Ajuste</Button>
-          {(rol === "admin" || rol === "sysadmin") && (
+    <Offcanvas show={show} onHide={onHide} placement="start">
+      {isLogged ? (
+        <>
+          <Offcanvas.Header closeButton>
+            <Offcanvas.Title>{user}</Offcanvas.Title>
+          </Offcanvas.Header>
+
+          <Offcanvas.Body className="d-flex flex-column w-100 justify-content-center text-center">
+            {showOrders ? (
+              <OrdersUser onBack={handleBack} />
+            ) : (
+              <>
+                <div className="align-items-center mb-4">
+                  <h1>¡Bienvenido a Yummy Coffee!</h1>
+                </div>
+
+                <Button
+                  className="rounded-pill px-4 m-4 button-Profile border-secondary"
+                  onClick={handleShowOrders}
+                >
+                  Ver Mis Órdenes
+                </Button>
+
+                {(rol === "admin" || rol === "sysadmin") && (
+                  <Button
+                    onClick={() => navigate("/admin")}
+                    className="rounded-pill px-4 m-4 button-Profile border-secondary"
+                  >
+                    Panel de administrador
+                  </Button>
+                )}
+
+                <Button
+                  className="rounded-pill px-4 m-4"
+                  variant="danger"
+                  onClick={handleLogout}
+                >
+                  Cerrar sesión
+                </Button>
+              </>
+            )}
+          </Offcanvas.Body>
+        </>
+      ) : (
+        <>
+          <Offcanvas.Header closeButton>
+            <Offcanvas.Title>Perfil</Offcanvas.Title>
+          </Offcanvas.Header>
+
+          <Offcanvas.Body className="d-flex flex-column justify-content-center align-items-center text-center">
+            <div className="mb-4">
+              <i className="bi bi-person-x fs-1 text-muted mb-3 d-block"></i>
+              <h3 className="mb-3">Acceso restringido</h3>
+              <p className="text-muted">
+                Para ver esta sección debés estar logueado
+              </p>
+            </div>
+
             <Button
-              onClick={() => navigate("/admin")}
-              className="rounded-pill px-4 m-4"
+              className="rounded-pill px-4 button-Profile"
+              onClick={() => {
+                onHide();
+                navigate("/auth");
+              }}
             >
-              Panel de administrador
+              Iniciar sesión
             </Button>
-          )}
-          <Button
-            className="rounded-pill px-4 m-4"
-            variant="danger"
-            onClick={() => {
-              onLogout();
-              errorToast("Sesion cerrada con exito.");
-            }}
-          >
-            Cerrar cesion
-          </Button>
-        </Offcanvas.Body>
-      </Offcanvas>
-    </>
+          </Offcanvas.Body>
+        </>
+      )}
+    </Offcanvas>
   );
-}
+};
 
 export default Profile;

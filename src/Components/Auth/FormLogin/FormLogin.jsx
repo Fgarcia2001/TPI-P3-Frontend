@@ -2,16 +2,15 @@ import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
-import { initFormData, initErrores } from "./FomLogin.data";
+import useFetch from "../../../useFetch/useFetch";
 import { AuthUserContext } from "../../../Services/AuthUserContext/AuthUserContext";
 import { jwtDecode } from "jwt-decode";
-import "./FormLogin.css";
+import { initFormData, initErrores, signinInvited } from "./FomLogin.data";
 import {
   errorToast,
   successToast,
 } from "../../shared/notifications/notification";
-import useFetch from "../../../useFetch/useFetch";
-
+import "./FormLogin.css";
 
 const FormLogin = () => {
   const [isRegisterMode, setIsRegisterMode] = useState(false);
@@ -40,27 +39,37 @@ const FormLogin = () => {
     const newErrors = { ...initErrores };
 
     if (!formData.email) {
-      newErrors.email = true;
+      newErrors.email = "El correo es requerido.";
       isValid = false;
     }
 
     if (!formData.contrasena) {
-      newErrors.contrasena = true;
+      newErrors.contrasena = "La contraseña es requerida.";
+      isValid = false;
+    } else if (formData.contrasena.length < 4) {
+      newErrors.contrasena = "La contraseña debe tener al menos 4 caracteres.";
       isValid = false;
     }
 
     if (isRegisterMode) {
       if (!formData.nombre) {
-        newErrors.nombre = true;
+        newErrors.nombre = "El nombre es requerido.";
         isValid = false;
       }
       if (!formData.apellido) {
-        newErrors.apellido = true;
+        newErrors.apellido = "El apellido es requerido.";
         isValid = false;
       }
       if (!formData.telefono) {
-        newErrors.telefono = true;
+        newErrors.telefono = "El teléfono es requerido.";
         isValid = false;
+      } else {
+        const phoneRegex = /^(?:15)?[0-9]{9,10}$/;
+        if (!phoneRegex.test(formData.telefono)) {
+          newErrors.telefono =
+            "Teléfono inválido. Debe tener entre 9 y 10 dígitos.";
+          isValid = false;
+        }
       }
     }
 
@@ -77,12 +86,12 @@ const FormLogin = () => {
 
     post(
       endpoint,
-      true,
+      false,
       formData,
       (data) => {
         if (!isRegisterMode && data.token) {
           const decoded = jwtDecode(data.token);
-          onLogin(data.token, data.user.nombre, decoded.rol);
+          onLogin(data.token, data.user.nombre, decoded.rol, decoded.id);
           navigate("/");
           successToast(`${data.user.nombre} ha iniciado sesión con éxito.`);
         } else if (isRegisterMode) {
@@ -91,124 +100,167 @@ const FormLogin = () => {
         }
       },
       (err) => {
-        console.error("Error en la respuesta:", err);
+        
+        errorToast(err.message);
+      }
+    );
+  };
+
+  const handleGuestAccess = () => {
+    post(
+      "/user/login",
+      false,
+      signinInvited,
+      (data) => {
+        const decoded = jwtDecode(data.token);
+        onLogin(data.token, data.user.nombre, decoded.rol, decoded.id);
+        navigate("/");
+        successToast("Accediste como invitado.");
+      },
+      (err) => {
+        
         errorToast(err.message);
       }
     );
   };
 
   return (
-    <Form className="w-25 w-md-100" onSubmit={handleSubmit}>
-      {/* Campos email y contraseña */}
-      <Form.Group className="mb-3">
+    <Form className="w-lg-25 w-sm-50 w-md-100" onSubmit={handleSubmit}>
+      {/* Email */}
+      <Form.Group className="mb-1">
+        <Form.Label htmlFor="email">Correo electrónico:*</Form.Label>
         {errors.email && (
-          <p className="text-danger m-0">El correo es requerido.</p>
+          <p className="text-danger m-0 small">{errors.email}</p>
         )}
         <Form.Control
-          className="inputLogin"
+          id="email"
+          className="inputLogin fs-4"
           type="email"
           name="email"
-          placeholder="Correo"
+          placeholder="ejemplo@correo.com"
           value={formData.email}
           onChange={handleInputChange}
-          isInvalid={errors.email}
+          isInvalid={!!errors.email}
         />
       </Form.Group>
 
+      {/* Contraseña */}
       <Form.Group className="mb-3">
+        <Form.Label htmlFor="contrasena">Contraseña:*</Form.Label>
         {errors.contrasena && (
-          <p className="text-danger m-0">La contraseña es requerida.</p>
+          <p className="text-danger m-0 small">{errors.contrasena}</p>
         )}
         <Form.Control
-          className="inputLogin"
+          id="contrasena"
+          className="inputLogin fs-4"
           type="password"
           name="contrasena"
-          placeholder="Contraseña"
+          placeholder="••••••••"
           value={formData.contrasena}
           onChange={handleInputChange}
-          isInvalid={errors.contrasena}
+          isInvalid={!!errors.contrasena}
         />
       </Form.Group>
 
       {/* Campos adicionales si es registro */}
       {isRegisterMode && (
         <>
+          {/* Nombre */}
           <Form.Group className="mb-3">
+            <Form.Label htmlFor="nombre">Nombre:*</Form.Label>
             {errors.nombre && (
-              <p className="text-danger m-0">El nombre es requerido.</p>
+              <p className="text-danger m-0 small">{errors.nombre}</p>
             )}
             <Form.Control
-              className="inputLogin"
+              id="nombre"
+              className="inputLogin fs-4"
               type="text"
               name="nombre"
-              placeholder="Nombre"
+              placeholder="Tu nombre"
               value={formData.nombre}
               onChange={handleInputChange}
-              isInvalid={errors.nombre}
+              isInvalid={!!errors.nombre}
             />
           </Form.Group>
 
+          {/* Apellido */}
           <Form.Group className="mb-3">
+            <Form.Label htmlFor="apellido">Apellido:*</Form.Label>
             {errors.apellido && (
-              <p className="text-danger m-0">El apellido es requerido.</p>
+              <p className="text-danger m-0 small">{errors.apellido}</p>
             )}
             <Form.Control
-              className="inputLogin"
+              id="apellido"
+              className="inputLogin fs-4"
               type="text"
               name="apellido"
-              placeholder="Apellido"
+              placeholder="Tu apellido"
               value={formData.apellido}
               onChange={handleInputChange}
-              isInvalid={errors.apellido}
+              isInvalid={!!errors.apellido}
             />
           </Form.Group>
 
+          {/* Teléfono */}
           <Form.Group className="mb-3">
+            <Form.Label htmlFor="telefono">Teléfono:*</Form.Label>
             {errors.telefono && (
-              <p className="text-danger m-0">El teléfono es requerido.</p>
+              <p className="text-danger m-0 small">{errors.telefono}</p>
             )}
             <Form.Control
-              className="inputLogin"
+              id="telefono"
+              className="inputLogin fs-4"
               type="tel"
               name="telefono"
-              placeholder="Teléfono"
+              placeholder="3415551234"
               value={formData.telefono}
               onChange={handleInputChange}
-              isInvalid={errors.telefono}
+              isInvalid={!!errors.telefono}
+              maxLength={10}
             />
+            <Form.Text className="text-muted">
+              Ingresá solo números (8-10 dígitos)
+            </Form.Text>
           </Form.Group>
         </>
       )}
 
       <div className="d-flex flex-column justify-content-center align-items-center">
-        {!isRegisterMode && (
-          <p className="btn text-primary" onClick={toggleMode}>
-            ¿Olvidó su contraseña?
-          </p>
-        )}
-
         <Button
-          className="btnSubmit mb-3"
+          className="btnSubmit mb-3 w-100"
           type="submit"
-          onClick={() => toggleMode}
+          disabled={isLoading}
         >
-          {isRegisterMode ? "Registrarse" : "Iniciar sesión"}
+          {isLoading
+            ? "Cargando..."
+            : isRegisterMode
+            ? "Registrarse"
+            : "Iniciar sesión"}
         </Button>
 
         {!isRegisterMode && (
-          <Button className="btnSubmit bg-secondary" type="button">
+          <Button
+            className="btnSubmit bg-secondary w-100 mb-3"
+            type="button"
+            onClick={handleGuestAccess}
+            disabled={isLoading}
+          >
             Seguir como invitado
           </Button>
         )}
 
-        <p className="btn">
+        <p className="text-center">
           <span>
             {isRegisterMode
               ? "¿Ya tienes una cuenta?"
-              : "¿Aún no tienes una cuenta?"}{" "}
+              : "¿Aún no tienes una cuenta?"}
           </span>
-          <span className="text-warning" onClick={toggleMode}>
-            {isRegisterMode ? "Regresar" : "Registrarse gratis"}
+          <span
+            className="text-warning login ms-1"
+            onClick={toggleMode}
+            style={{ cursor: "pointer" }}
+          >
+            {isRegisterMode ? "Iniciar sesión" : "Registrarse gratis"}
           </span>
         </p>
       </div>

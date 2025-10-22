@@ -1,6 +1,6 @@
 export const initFormData = {
   contrasena: "",
-  email: "", 
+  email: "",
   nombre: "",
   apellido: "",
   telefono: "",
@@ -13,4 +13,9 @@ export const initErrores = {
   nombre: false,
   apellido: false,
   telefono: false,
+};
+
+export const signinInvited = {
+  contrasena: "12345",
+  email: "invitado@gmail.com",
 };

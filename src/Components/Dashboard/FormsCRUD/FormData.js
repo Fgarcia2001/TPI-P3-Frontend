@@ -4,7 +4,7 @@ export const initFormData = {
   precio: "",
   categoria: "",
   imagen: "",
-  disponible: "",
+  disponible: true,
 };
 
 export const initErrores = {

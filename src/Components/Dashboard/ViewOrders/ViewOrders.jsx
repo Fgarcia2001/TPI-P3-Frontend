@@ -1,47 +1,56 @@
-import Card from "react-bootstrap/Card";
+import { useEffect, useState } from "react";
+import { Spinner, Container, Row, Col, Badge } from "react-bootstrap";
+import useFetch from "../../../useFetch/useFetch";
 import OrderButton from "./OrderButton/OrderButton";
+import "./ViewOrders.css";
 
 const ViewOrders = () => {
-  /*  fetch(`http://localhost:3001/orders`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  })
-    .then((res) => {
-      // Se recibe el objeto Response (res)
-      if (!res.ok) {
-        throw new Error(`Error en la solicitud: ${res.status}`);
-      }
-      return res.json();
-    })
-    .then((data) => {
-      // Se reciben los datos JSON (data)
-      console.log("Datos de las órdenes recibidos:", data);
-    })
-    .catch((error) => {
-      console.error("Hubo un problema con la operación fetch:", error);
-    }); */
+  const [orders, setOrders] = useState([]);
+  const { get, isLoading } = useFetch();
+
+  useEffect(() => {
+    get("/orders", true, (data) => {
+      setOrders(data);
+    });
+  }, []);
+
+  if (isLoading) {
+    return (
+      <Container className="view-orders-container text-center py-5">
+        <Spinner animation="border" role="status" variant="primary" size="lg">
+          <span className="visually-hidden">Cargando...</span>
+        </Spinner>
+        <p className="mt-3 text-muted fs-5">Cargando órdenes...</p>
+      </Container>
+    );
+  }
+
   return (
-    <>
-      <OrderButton></OrderButton>
-      <Card
-        border="dark"
-        className="border-3 rounded-4"
-        style={{ width: "auto" }}
-      >
-        <Card.Header>Orden n° 101</Card.Header>
-        <Card.Body>
-          <Card.Title>Productos</Card.Title>
-          <div className="d-flex">
-            <Card.Text className="fs-5">Hamburguesa</Card.Text>
-            <Card.Text className="fs-5">Cantidad: 3</Card.Text>
-            <Card.Text className="fs-5">Precio unitario: 150</Card.Text>
-          </div>
-          <Card.Text>Subtotal: {3 * 150}</Card.Text>
-        </Card.Body>
-      </Card>
-    </>
+    <Container fluid className="view-orders-container p-4">
+      {/* Header */}
+      <div className="orders-header mb-4">
+        <Row className="align-items-center">
+          <Col>
+            <h2 className="orders-title mb-2">
+              <i className="bi bi-receipt-cutoff me-2"></i>
+              Vista de ordenes
+            </h2>
+            <p className="orders-subtitle text-muted mb-0">
+              Total de órdenes:
+              <Badge bg="primary" className="ms-2">
+                {orders.length}
+              </Badge>
+            </p>
+          </Col>
+        </Row>
+      </div>
+
+      <div className="">
+        {orders.map((order) => (
+          <OrderButton key={order.id} order={order} />
+        ))}
+      </div>
+    </Container>
   );
 };
 
